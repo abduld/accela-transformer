@@ -212,4 +212,5 @@ cython_debug/
 _tmp
 *.hat
 *.asm
+*.s
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,python,c++,cmake
