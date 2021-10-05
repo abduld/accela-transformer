@@ -45,6 +45,7 @@ conan_cmake_configure(REQUIRES
                     openblas/0.3.17
                     nlohmann_json/3.9.1
                     clipp/1.2.3
+                    xsimd/7.5.0
                   GENERATORS cmake_find_package)
 
 conan_cmake_autodetect(settings)
