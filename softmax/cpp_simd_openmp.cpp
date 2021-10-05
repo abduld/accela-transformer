@@ -1,5 +1,3 @@
-#pragma once
-
 #include <algorithm>
 #include <cmath>
 #include <vector>
@@ -9,7 +7,7 @@
 #include "config.hpp"
 
 static void Softmax_CPP_SIMD_OpenMP(benchmark::State& state) {
-  std::vector<float> in(N, 1), out(N, 1);
+  std::vector<float> in(N, 1), out(N, 0);
   const auto inData = in.data();
   auto outData      = out.data();
   for (auto _ : state) {
@@ -30,6 +28,7 @@ static void Softmax_CPP_SIMD_OpenMP(benchmark::State& state) {
     }
     benchmark::ClobberMemory();
   }
-  state.SetItemsProcessed(N);
-  state.SetBytesProcessed(N * sizeof(float));
+  const int64_t items_processed = state.iterations() * N;
+  state.SetItemsProcessed(items_processed);
+  state.SetBytesProcessed(items_processed * sizeof(float));
 }

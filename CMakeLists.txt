@@ -90,6 +90,7 @@ find_package(benchmark REQUIRED)
 find_package(clipp REQUIRED)
 find_package(OpenBLAS REQUIRED)
 find_package(nlohmann_json REQUIRED)
+find_package(xsimd REQUIRED)
 find_package(OpenMP)
 find_package(PythonInterp REQUIRED)
 
@@ -119,6 +120,13 @@ elseif(IS_GCC_LIKE)
   add_definitions(-ffast-math)
 endif()
 
+if(COMPILER_IS_CLANG)
+  add_definitions(-DCOMPILER_IS_CLANG=1)
+  add_definitions(-Rpass=loop-vectorize)
+  add_definitions(-ferror-limit=1)
+endif(COMPILER_IS_CLANG)
+
+
 macro(add_robocode MODULE_NAME IMPLEMENTATION_NAME)
   set(_PythonGeneratorFile ${IMPLEMENTATION_NAME}.py)
   set(_OutputObjectFile ${IMPLEMENTATION_NAME}.o)
@@ -140,7 +148,7 @@ macro(add_robocode MODULE_NAME IMPLEMENTATION_NAME)
     DEPENDS ${_PythonGeneratorFile})
   add_custom_target(robocode_${IMPLEMENTATION_NAME} ALL
                     DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}")
-  target_link_libraries(${MODULE_NAME} PRIVATE robocode_${IMPLEMENTATION_NAME})
+  target_link_libraries(${MODULE_NAME} PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}")
 endmacro()
 
 add_subdirectory(softmax)
