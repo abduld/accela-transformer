@@ -1,28 +1,30 @@
 cmake_minimum_required(VERSION 2.8.12)
-project(Benchmark LANGUAGES CXX )
+project(Benchmark LANGUAGES CXX)
 
-
-if (POLICY CMP0054)
+if(POLICY CMP0054)
   cmake_policy(SET CMP0054 NEW)
 endif()
-if (POLICY CMP0037)
+if(POLICY CMP0037)
   cmake_policy(SET CMP0037 NEW)
 endif()
-if (POLICY CMP0010)
+if(POLICY CMP0010)
   cmake_policy(SET CMP0010 NEW)
 endif()
-if (POLICY CMP0025)
+if(POLICY CMP0025)
   cmake_policy(SET CMP0025 NEW)
 endif()
 
-
-SET(CMAKE_CXX_STANDARD 17)
-SET(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel." FORCE)
+  set(
+    CMAKE_BUILD_TYPE "Release"
+    CACHE
+      STRING
+      "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel."
+    FORCE)
 endif()
-
 
 option(USE_TIMERS "Instrument the code by using kernel timers" OFF)
 
@@ -30,30 +32,58 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 
 if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
-message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
-file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.16.1/conan.cmake"
-            "${CMAKE_BINARY_DIR}/conan.cmake"
-            EXPECTED_HASH SHA256=396e16d0f5eabdc6a14afddbcfff62a54a7ee75c6da23f32f7a31bc85db23484
-            TLS_VERIFY ON)
+  message(
+    STATUS
+      "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
+  file(
+    DOWNLOAD
+      "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.16.1/conan.cmake"
+      "${CMAKE_BINARY_DIR}/conan.cmake"
+    EXPECTED_HASH
+      SHA256=396e16d0f5eabdc6a14afddbcfff62a54a7ee75c6da23f32f7a31bc85db23484
+    TLS_VERIFY ON)
 endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
 conan_cmake_configure(REQUIRES
-                    fmt/6.1.2
-                    benchmark/1.5.6
-                    openblas/0.3.17
-                    nlohmann_json/3.9.1
-                    clipp/1.2.3
-                    xsimd/7.5.0
-                  GENERATORS cmake_find_package)
+                      fmt/6.1.2
+                      benchmark/1.5.6
+                      openblas/0.3.17
+                      nlohmann_json/3.9.1
+                      clipp/1.2.3
+                      xsimd/7.5.0
+                      GENERATORS
+                      cmake_find_package)
 
 conan_cmake_autodetect(settings)
 
-conan_cmake_install(PATH_OR_REFERENCE .
-                BUILD missing
-                REMOTE conan-center
-                SETTINGS ${settings})
+conan_cmake_install(PATH_OR_REFERENCE
+                    .
+                    BUILD
+                    missing
+                    REMOTE
+                    conan-center
+                    SETTINGS
+                    ${settings})
+
+if(CMAKE_C_COMPILER MATCHES ".*(clang|emcc).*"
+   OR CMAKE_C_COMPILER_ID MATCHES ".*(Clang|emcc).*")
+  set(COMPILER_IS_CLANG TRUE)
+endif()
+
+if(CMAKE_COMPILER_IS_GNUCC
+   OR CMAKE_COMPILER_IS_GNUCXX
+   OR CMAKE_C_COMPILER MATCHES ".*(gcc|clang|emcc).*"
+   OR CMAKE_C_COMPILER_ID MATCHES ".*(GCC|Clang|emcc).*")
+  set(IS_GCC_LIKE TRUE)
+else()
+  set(IS_GCC_LIKE FALSE)
+endif()
+
+if(IS_GCC_LIKE AND NOT COMPILER_IS_CLANG)
+  set(COMPILER_IS_GCC TRUE)
+endif()
 
 find_package(fmt REQUIRED)
 find_package(benchmark REQUIRED)
@@ -63,26 +93,54 @@ find_package(nlohmann_json REQUIRED)
 find_package(OpenMP)
 find_package(PythonInterp REQUIRED)
 
-if (OPENMP_FOUND)
-    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+if(OPENMP_FOUND)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+  set(CMAKE_EXE_LINKER_FLAGS
+      "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 endif()
 
+if(MSVC)
+  # Perform extremely aggressive optimization on Release builds: Flags on Visual
+  # Studio 2010 and newer: Runtime library: Multi-threaded (/MT) as opposed to
+  # default 'Multi-threaded DLL' - static runtime library allows better LTCG
+  # inlining opportunities. Optimization: Full Optimization (/Ox) Inline
+  # Function Expansion: Any Suitable (/Ob2) Enable Intrinsic Functions: Yes
+  # (/Oi) Favor Size Or Speed: Favor fast code (/Ot) Enable Fiber-Safe
+  # Optimizations: Yes (/GT) Enable String Pooling: Yes (/GF) Buffer Security
+  # Check: No (/GS-) Floating Point Model: Fast (/fp:fast) Enable Floating Point
+  # Exceptions: No (/fp:except-) Build with Multiple Processes (/MP)
+  add_definitions("/Ox /Ob2 /Oi /Ot /GT /GF /GS- /fp:fast /fp:except- /MP")
+  add_definitions(/arch:AVX)
+elseif(IS_GCC_LIKE)
+  # http://gcc.gnu.org/onlinedocs/gcc-4.8.2/gcc/i386-and-x86-64-Options.html#i38
+  # 6-and-x86-64-Options add_definitions(-march=corei7-avx -mtune=corei7-avx)
+  add_definitions(-march=native)
+  add_definitions(-ffast-math)
+endif()
 
 macro(add_robocode MODULE_NAME IMPLEMENTATION_NAME)
   set(_PythonGeneratorFile ${IMPLEMENTATION_NAME}.py)
   set(_OutputObjectFile ${IMPLEMENTATION_NAME}.o)
-  add_custom_command(OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}" PRE_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/${_PythonGeneratorFile}" "${CMAKE_CURRENT_BINARY_DIR}/${_PythonGeneratorFile}"
-      COMMAND "${PYTHON_EXECUTABLE}" "${CMAKE_CURRENT_BINARY_DIR}/${_PythonGeneratorFile}" --argument
-      COMMAND ${CMAKE_OBJDUMP} --disassemble --demangle --wide -S "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}" > ${CMAKE_CURRENT_BINARY_DIR}/${IMPLEMENTATION_NAME}.s
-      WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
-      DEPENDS ${_PythonGeneratorFile})
+  add_custom_command(
+    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}"
+    PRE_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+            "${CMAKE_CURRENT_SOURCE_DIR}/${_PythonGeneratorFile}"
+            "${CMAKE_CURRENT_BINARY_DIR}/${_PythonGeneratorFile}"
+    COMMAND "${PYTHON_EXECUTABLE}"
+            "${CMAKE_CURRENT_BINARY_DIR}/${_PythonGeneratorFile}"
+            --argument
+    COMMAND ${CMAKE_OBJDUMP}
+            --disassemble
+            --demangle
+            --wide -S "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}" >
+                   ${CMAKE_CURRENT_BINARY_DIR}/${IMPLEMENTATION_NAME}.s
+    WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+    DEPENDS ${_PythonGeneratorFile})
   add_custom_target(robocode_${IMPLEMENTATION_NAME} ALL
-      DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}")
+                    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}")
   target_link_libraries(${MODULE_NAME} PRIVATE robocode_${IMPLEMENTATION_NAME})
 endmacro()
-
 
 add_subdirectory(softmax)
