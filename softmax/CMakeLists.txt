@@ -26,5 +26,6 @@ target_link_libraries(${MODULE_NAME} PRIVATE
         fmt::fmt
         clipp::clipp
         OpenBLAS::OpenBLAS)
+target_compile_definitions(${MODULE_NAME} -DMODULE_NAME=${MODULE_NAME})
 
 install(TARGETS ${MODULE_NAME} RUNTIME DESTINATION bin)

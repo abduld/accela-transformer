@@ -40,13 +40,12 @@ fused_plan = fused_schedule.create_action_plan()
 target = rp.Target(category=rp.Target.Category.CPU)
 ii = fused_schedule.split(i, target.vector_bytes // 4)
 jj = fused_schedule.split(j, target.vector_bytes // 4)
+fused_schedule.reorder(f, i, ii, j, jj, k)
 
 fused_plan = fused_schedule.create_action_plan()
-
 fused_plan.vectorize(ii)
 fused_plan.vectorize(jj)
 
 package = rp.Package()
 package.add_function(fused_plan, args=(Output, Input), base_name="softmax_vectorized")
-
 package.build(name="softmax_vectorized", format=rp.Package.Format.HAT)
