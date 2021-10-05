@@ -130,6 +130,7 @@ endif(COMPILER_IS_CLANG)
 macro(add_robocode MODULE_NAME IMPLEMENTATION_NAME)
   set(_PythonGeneratorFile ${IMPLEMENTATION_NAME}.py)
   set(_OutputObjectFile ${IMPLEMENTATION_NAME}.o)
+  message(STATUS " CMAKE_CURRENT_BINARY_DIR = ${CMAKE_CURRENT_BINARY_DIR}")
   add_custom_command(
     OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}"
     PRE_BUILD
