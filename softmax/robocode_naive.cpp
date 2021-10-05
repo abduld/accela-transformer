@@ -17,4 +17,4 @@ static void Softmax_RobocodeNaive(benchmark::State& state) {
   state.SetBytesProcessed(items_processed * sizeof(float));
 }
 
-// BENCHMARK(Softmax_RobocodeNaive);
+BENCHMARK(Softmax_RobocodeNaive)->Unit(benchmark::kMillisecond);

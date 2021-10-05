@@ -4,7 +4,7 @@
 #include <vector>
 
 #include <benchmark/benchmark.h>
-#include <xsimd/xsimd.hpp>
+#include <xsimd/xsimd.hpp> 
 
 #include "config.hpp"
 
@@ -12,7 +12,7 @@ namespace xs = xsimd;
 
 
 static float xsimdMax(const float* data0, int len) {
-  const float* data = reinterpret_cast<float*>(__builtin_assume_aligned(data0, 64));
+  const float* data = reinterpret_cast<float*>(__builtin_assume_aligned(data0, XSIMD_DEFAULT_ALIGNMENT));
   float maxVal      = data[0];
 #pragma omp simd reduction(max : maxVal)
   for (int ii = 0; ii < len; ii++) {
@@ -24,7 +24,7 @@ static float xsimdMax(const float* data0, int len) {
 
 static float xsimdTotal(const float* data0, int len) {
   using simd_t      = xsimd::simd_type<float>;
-  const float* data = reinterpret_cast<float*>(__builtin_assume_aligned(data0, 64));
+  const float* data = reinterpret_cast<float*>(__builtin_assume_aligned(data0, XSIMD_DEFAULT_ALIGNMENT));
 
   auto inc     = simd_t::size;
   auto vecSize = len - len % inc;
@@ -41,17 +41,16 @@ static float xsimdTotal(const float* data0, int len) {
 }
 
 static void Softmax_CPP_XSIMD(benchmark::State& state) {
-  using simd_t = xsimd::simd_type<float>;
-  std::vector<float> in(N, 1), out(N, 0);
+  using simd_t      = xsimd::simd_type<float>;
+  std::vector<float, xsimd::aligned_allocator<float, XSIMD_DEFAULT_ALIGNMENT>> in(N, 1), out(N, 0);
 
   constexpr int inc = simd_t::size;
   // size for which the vectorization is possible
   constexpr auto vec_size = N - (N % inc);
 
-  float* inData  = reinterpret_cast<float*>(__builtin_assume_aligned(in.data(), 64));
-  float* outData = reinterpret_cast<float*>(__builtin_assume_aligned(out.data(), 64));
+  float* inData  = reinterpret_cast<float*>(__builtin_assume_aligned(in.data(), XSIMD_DEFAULT_ALIGNMENT));
+  float* outData = reinterpret_cast<float*>(__builtin_assume_aligned(out.data(), XSIMD_DEFAULT_ALIGNMENT));
 
-  float lastVal = 0;
   for (auto _ : state) {
     float maxVal = xsimdMax(inData, N);
     for (int ii = 0; ii < vec_size; ii += inc) {

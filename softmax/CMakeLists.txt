@@ -4,6 +4,7 @@ add_executable(${MODULE_NAME}
   main.cpp
   cpp_naive.cpp
   cpp_simd_xsimd.cpp
+  cpp_simd_openmp.cpp
   robocode_naive.cpp
 )
 add_robocode(${MODULE_NAME} softmax_naive)
