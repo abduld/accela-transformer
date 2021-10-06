@@ -8,12 +8,12 @@ static void CPP_SIMD_OpenMP(benchmark::State& state) {
   auto outData      = out.data();
   for (auto _ : state) {
     auto maxVal = -std::numeric_limits<float>::max();
-#pragma omp simd reduction(max : maxVal) aligned(inData : 16)
+#pragma omp simd reduction(max : maxVal) aligned(inData : XSIMD_DEFAULT_ALIGNMENT)
     for (int idx = 0; idx < N; idx++) {
       maxVal = std::max(maxVal, inData[idx]);
     }
     float sum = 0;
-#pragma omp simd reduction(+ : sum) aligned(inData, outData : 16)
+#pragma omp simd reduction(+ : sum) aligned(inData, outData : XSIMD_DEFAULT_ALIGNMENT)
     for (int idx = 0; idx < N; idx++) {
       outData[idx] = expf(inData[idx] - maxVal);
       sum += outData[idx];
@@ -22,6 +22,7 @@ static void CPP_SIMD_OpenMP(benchmark::State& state) {
     for (int idx = 0; idx < N; idx++) {
       outData[idx] /= sum;
     }
+    benchmark::DoNotOptimize(out.data());
     benchmark::ClobberMemory();
   }
   const int64_t items_processed = state.iterations() * N;

@@ -53,6 +53,7 @@ conan_cmake_configure(REQUIRES
                       nlohmann_json/3.9.1
                       clipp/1.2.3
                       xsimd/7.5.0
+                      xtensor/0.23.10
                       GENERATORS
                       cmake_find_package)
 
@@ -91,7 +92,8 @@ find_package(clipp REQUIRED)
 find_package(OpenBLAS REQUIRED)
 find_package(nlohmann_json REQUIRED)
 find_package(xsimd REQUIRED)
-find_package(OpenMP)
+find_package(xtensor REQUIRED)
+find_package(OpenMP REQUIRED)
 find_package(PythonInterp REQUIRED)
 
 if(OPENMP_FOUND)
@@ -165,6 +167,7 @@ macro(add_robocode MODULE_NAME)
   endforeach()
 endmacro()
 
+
 include_directories(SYSTEM ${CONAN_INCLUDE_DIRS})
 include_directories(${CMAKE_SOURCE_DIR}/utils)
 link_libraries(
@@ -174,6 +177,7 @@ link_libraries(
   fmt::fmt
   clipp::clipp
   OpenBLAS::OpenBLAS
-  xsimd::xsimd)
+  xsimd::xsimd
+  xtensor::xtensor)
 
 add_subdirectory(softmax)

@@ -62,6 +62,7 @@ static void CPP_XSIMD(benchmark::State& state) {
     for (int ii = vec_size; ii < N; ii++) {
       outData[ii] /= totalVal;
     }
+    benchmark::DoNotOptimize(out.data());
     benchmark::ClobberMemory();
   }
 
