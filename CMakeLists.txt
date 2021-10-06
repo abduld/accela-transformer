@@ -132,7 +132,6 @@ endif(COMPILER_IS_CLANG)
 macro(add_robocode_ MODULE_NAME IMPLEMENTATION_NAME)
   set(_PythonGeneratorFile ${IMPLEMENTATION_NAME}.py)
   set(_OutputObjectFile ${IMPLEMENTATION_NAME}.o)
-  message(STATUS " CMAKE_CURRENT_BINARY_DIR = ${CMAKE_CURRENT_BINARY_DIR}")
   add_custom_command(
     OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}"
     PRE_BUILD
@@ -169,7 +168,7 @@ endmacro()
 
 
 include_directories(SYSTEM ${CONAN_INCLUDE_DIRS})
-include_directories(${CMAKE_SOURCE_DIR}/utils)
+include_directories(${CMAKE_SOURCE_DIR}/src/utils)
 link_libraries(
   ${CONAN_LIBS}
   benchmark::benchmark
@@ -180,4 +179,4 @@ link_libraries(
   xsimd::xsimd
   xtensor::xtensor)
 
-add_subdirectory(softmax)
+add_subdirectory(src/softmax)
