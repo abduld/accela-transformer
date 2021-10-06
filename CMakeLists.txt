@@ -142,8 +142,13 @@ macro(add_robocode MODULE_NAME IMPLEMENTATION_NAME)
             --argument
     COMMAND ${CMAKE_OBJDUMP}
             --disassemble
-            --demangle
-            --wide -S "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}" >
+            # --demangle
+            --visualize-jumps
+            --no-show-raw-insn
+            # -l
+            # --wide
+            # -S 
+            "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}" >
                    ${CMAKE_CURRENT_BINARY_DIR}/${IMPLEMENTATION_NAME}.s
     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
     DEPENDS ${_PythonGeneratorFile})

@@ -41,8 +41,10 @@ def _():
     Output[j] /= Denom[0]
 div_schedule = div_nest.create_schedule()
 
-fused_schedule = rp.fuse((init_schedule, max_schedule, exp_schedule), partial=0)
-fused_schedule = rp.fuse((fused_schedule, div_schedule), partial=0)
+# fused_schedule = rp.fuse((init_schedule, max_schedule, exp_schedule), partial=0)
+# fused_schedule = rp.fuse((fused_schedule, div_schedule), partial=0)
+
+fused_schedule = rp.fuse((init_schedule, max_schedule, exp_schedule, div_schedule), partial=0)
 
 fused_plan = fused_schedule.create_action_plan()
 

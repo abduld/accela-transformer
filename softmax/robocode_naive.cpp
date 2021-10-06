@@ -15,6 +15,7 @@ static void Softmax_RobocodeNaive(benchmark::State& state) {
   const int64_t items_processed = state.iterations() * N;
   state.SetItemsProcessed(items_processed);
   state.SetBytesProcessed(items_processed * sizeof(float));
+  state.counters["Value"] = out[0];
 }
 
 BENCHMARK(Softmax_RobocodeNaive)->Unit(benchmark::kMillisecond);
