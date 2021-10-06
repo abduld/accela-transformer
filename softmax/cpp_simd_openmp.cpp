@@ -2,7 +2,7 @@
 #include "utils.hpp"
 #include "config.hpp"
 
-static void Softmax_CPP_SIMD_OpenMP(benchmark::State& state) {
+static void CPP_SIMD_OpenMP(benchmark::State& state) {
   std::vector<float, xsimd::aligned_allocator<float, XSIMD_DEFAULT_ALIGNMENT>> in(N,1), out(N);
   const auto inData = in.data();
   auto outData      = out.data();
@@ -30,4 +30,4 @@ static void Softmax_CPP_SIMD_OpenMP(benchmark::State& state) {
   state.counters["Value"] = N*out[0];  // Expected to be 1
 }
 
-ADD_BENCHMARK(Softmax_CPP_SIMD_OpenMP);
+ADD_BENCHMARK(CPP_SIMD_OpenMP);
