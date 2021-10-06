@@ -6,10 +6,10 @@ static void CPP_Naive(benchmark::State& state) {
   const auto inData = in.data();
   auto outData = out.data();
   for (auto _ : state) {
-    const float alpha = *std::max_element(in.begin(), in.end());
+    const float max = *std::max_element(in.begin(), in.end());
     float denominator(0);
     for (int j = 0; j < N; j++) {
-      outData[j] = std::exp(inData[j] - alpha);
+      outData[j] = std::exp(inData[j] - max);
       denominator += outData[j];
     }
     for (int j = 0; j < N; j++) {
