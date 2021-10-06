@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import math
 import robopy as rp
 
@@ -41,16 +40,24 @@ def _():
     Output[j] /= Denom[0]
 div_schedule = div_nest.create_schedule()
 
-# fused_schedule = rp.fuse((init_schedule, max_schedule, exp_schedule), partial=0)
-# fused_schedule = rp.fuse((fused_schedule, div_schedule), partial=0)
+fused_schedule = rp.fuse((init_schedule, max_schedule, exp_schedule), partial=0)
+fused_schedule = rp.fuse((fused_schedule, div_schedule), partial=0)
+f1, f2, z, m, i, j = fused_schedule.get_indices()
 
-fused_schedule = rp.fuse((init_schedule, max_schedule, exp_schedule, div_schedule), partial=0)
 
 fused_plan = fused_schedule.create_action_plan()
 
 target = rp.Target(category=rp.Target.Category.CPU)
+zz = fused_schedule.split(z, target.vector_bytes // 4)
+mm = fused_schedule.split(m, target.vector_bytes // 4)
+ii = fused_schedule.split(i, target.vector_bytes // 4)
+jj = fused_schedule.split(j, target.vector_bytes // 4)
+fused_schedule.reorder(f1, f2, z, zz, m, mm, i, ii, j, jj)
+
+fused_plan = fused_schedule.create_action_plan()
+fused_plan.vectorize(ii) 
+fused_plan.vectorize(jj)
 
 package = rp.Package()
-package.add_function(fused_plan, args=(Output, Input), base_name="softmax_naive")
-
-package.build(name="softmax_naive", format=rp.Package.Format.HAT, mode=rp.Package.Mode.DEBUG if DEV_MODE else rp.Package.Mode.RELEASE )
+package.add_function(fused_plan, args=(Output, Input), base_name="vectorized")
+package.build(name="vectorized", format=rp.Package.Format.HAT)

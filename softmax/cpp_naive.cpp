@@ -1,13 +1,8 @@
-#include <algorithm>
-#include <cmath>
-#include <vector>
-
-#include <benchmark/benchmark.h>
-
+#include "utils.hpp"
 #include "config.hpp"
 
 static void Softmax_CPP_Naive(benchmark::State& state) {
-  std::vector<float> in(N, 1), out(N, 0);
+  std::vector<float, xsimd::aligned_allocator<float, XSIMD_DEFAULT_ALIGNMENT>> in(N,1), out(N);
   const auto inData = in.data();
   auto outData = out.data();
   for (auto _ : state) {
@@ -25,7 +20,7 @@ static void Softmax_CPP_Naive(benchmark::State& state) {
   const int64_t items_processed = state.iterations() * N;
   state.SetItemsProcessed(items_processed);
   state.SetBytesProcessed(items_processed * sizeof(float));
-  state.counters["Value"] = out[0];
+  state.counters["Value"] = N*out[0];  // Expected to be 1
 }
 
-BENCHMARK(Softmax_CPP_Naive)->Unit(benchmark::kMillisecond);
+ADD_BENCHMARK(Softmax_CPP_Naive);

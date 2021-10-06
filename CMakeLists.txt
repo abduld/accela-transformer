@@ -127,7 +127,7 @@ if(COMPILER_IS_CLANG)
 endif(COMPILER_IS_CLANG)
 
 
-macro(add_robocode MODULE_NAME IMPLEMENTATION_NAME)
+macro(add_robocode_ MODULE_NAME IMPLEMENTATION_NAME)
   set(_PythonGeneratorFile ${IMPLEMENTATION_NAME}.py)
   set(_OutputObjectFile ${IMPLEMENTATION_NAME}.o)
   message(STATUS " CMAKE_CURRENT_BINARY_DIR = ${CMAKE_CURRENT_BINARY_DIR}")
@@ -155,6 +155,25 @@ macro(add_robocode MODULE_NAME IMPLEMENTATION_NAME)
   add_custom_target(robocode_${IMPLEMENTATION_NAME} ALL
                     DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}")
   target_link_libraries(${MODULE_NAME} PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}")
+  target_sources(${MODULE_NAME} PRIVATE robocode_${IMPLEMENTATION_NAME}.cpp)
 endmacro()
+
+macro(add_robocode MODULE_NAME)
+  set(robocode_implementations ${ARGN}) 
+  foreach(robocode_implementation IN LISTS robocode_implementations)
+    add_robocode_(${MODULE_NAME} ${robocode_implementation})
+  endforeach()
+endmacro()
+
+include_directories(SYSTEM ${CONAN_INCLUDE_DIRS})
+include_directories(${CMAKE_SOURCE_DIR}/utils)
+link_libraries(
+  ${CONAN_LIBS}
+  benchmark::benchmark
+  nlohmann_json::nlohmann_json
+  fmt::fmt
+  clipp::clipp
+  OpenBLAS::OpenBLAS
+  xsimd::xsimd)
 
 add_subdirectory(softmax)

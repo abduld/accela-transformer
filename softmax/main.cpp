@@ -1,6 +1,5 @@
 
-#include <benchmark/benchmark.h>
-
+#include "utils.hpp"
 #include "config.hpp"
 
 BENCHMARK_MAIN();
