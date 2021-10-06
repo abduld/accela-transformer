@@ -86,6 +86,8 @@ if(IS_GCC_LIKE AND NOT COMPILER_IS_CLANG)
   set(COMPILER_IS_GCC TRUE)
 endif()
 
+set(XTENSOR_USE_XSIMD 1) # see https://xtensor.readthedocs.io/en/latest/build-options.html#external-dependencies
+
 find_package(fmt REQUIRED)
 find_package(benchmark REQUIRED)
 find_package(clipp REQUIRED)

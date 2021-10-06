@@ -6,9 +6,11 @@
 
 static void Robocode_Vectorized(benchmark::State& state) {
   std::vector<float, xsimd::aligned_allocator<float, XSIMD_DEFAULT_ALIGNMENT>> in(N,1), out(N);
+  const auto inData = in.data();
+  auto outData = out.data();
   for (auto _ : state) {
-    vectorized(out.data(), in.data());
-    benchmark::DoNotOptimize(out.data());
+    vectorized(outData, inData);
+    benchmark::DoNotOptimize(outData);
     benchmark::ClobberMemory();
   }
   const int64_t items_processed = state.iterations() * N;

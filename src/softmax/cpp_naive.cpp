@@ -15,7 +15,7 @@ static void CPP_Naive(benchmark::State& state) {
     for (int j = 0; j < N; j++) {
       outData[j] /= denominator;
     }
-    benchmark::DoNotOptimize(out.data());
+    benchmark::DoNotOptimize(outData);
     benchmark::ClobberMemory();
   }
   const int64_t items_processed = state.iterations() * N;

@@ -22,7 +22,7 @@ static void CPP_SIMD_OpenMP(benchmark::State& state) {
     for (int idx = 0; idx < N; idx++) {
       outData[idx] /= sum;
     }
-    benchmark::DoNotOptimize(out.data());
+    benchmark::DoNotOptimize(outData);
     benchmark::ClobberMemory();
   }
   const int64_t items_processed = state.iterations() * N;
