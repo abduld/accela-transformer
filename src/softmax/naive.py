@@ -31,8 +31,14 @@ i = exp_nest.get_indices()
 @exp_nest.iteration_logic
 def _():
     Output[i] = rp.exp(Input[i] - MaxVal[0])
-    Denom[0] += Output[i]
 exp_schedule = exp_nest.create_schedule()
+
+accum_nest = rp.Nest(shape=(N,))
+a = accum_nest.get_indices()
+@exp_nest.iteration_logic
+def _():
+    Denom[0] += Output[i]
+accum_schedule = accum_nest.create_schedule()
 
 div_nest = rp.Nest(shape=(N, ))
 j = div_nest.get_indices()
@@ -43,7 +49,8 @@ div_schedule = div_nest.create_schedule()
 
 fused_schedule1 = rp.fuse((init_schedule, max_schedule), partial=0)
 fused_schedule2 = rp.fuse((fused_schedule1, exp_schedule), partial=0)
-fused_schedule = rp.fuse((fused_schedule2, div_schedule), partial=0)
+fused_schedule3 = rp.fuse((fused_schedule2, accum_schedule), partial=0)
+fused_schedule = rp.fuse((fused_schedule3, div_schedule), partial=0)
 
 fused_plan = fused_schedule.create_action_plan()
 
