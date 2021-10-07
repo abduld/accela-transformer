@@ -15,8 +15,8 @@ init_nest = rp.Nest(shape=(1,))
 z = init_nest.get_indices()
 @init_nest.iteration_logic
 def _():
-    MaxVal[z] = -math.inf 
-    Denom[z] = 0.0
+    MaxVal[0] = -math.inf 
+    Denom[0] = 0.0
 init_schedule = init_nest.create_schedule()
 
 max_nest = rp.Nest(shape=(N,))
