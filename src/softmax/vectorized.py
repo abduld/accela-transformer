@@ -40,23 +40,38 @@ def _():
     Output[j] /= Denom[0]
 div_schedule = div_nest.create_schedule()
 
-fused_schedule = rp.fuse((init_schedule, max_schedule, exp_schedule), partial=0)
-fused_schedule = rp.fuse((fused_schedule, div_schedule), partial=0)
-f1, f2, z, m, i, j = fused_schedule.get_indices()
+fused_schedule1 = rp.fuse((init_schedule, max_schedule), partial=0)
+fused_schedule2 = rp.fuse((fused_schedule1, exp_schedule), partial=0)
+fused_schedule = rp.fuse((fused_schedule2, div_schedule), partial=0)
+f1, f2, f3, z, m, i, j = fused_schedule.get_indices()
 
 
 fused_plan = fused_schedule.create_action_plan()
 
 target = rp.Target(category=rp.Target.Category.CPU)
-zz = fused_schedule.split(z, target.vector_bytes // 4)
-mm = fused_schedule.split(m, target.vector_bytes // 4)
-ii = fused_schedule.split(i, target.vector_bytes // 4)
-jj = fused_schedule.split(j, target.vector_bytes // 4)
-fused_schedule.reorder(f1, f2, z, zz, m, mm, i, ii, j, jj)
+tile_size = 128
+zz = fused_schedule.split(z, tile_size)
+mm = fused_schedule.split(m, tile_size)
+ii = fused_schedule.split(i, tile_size)
+jj = fused_schedule.split(j, tile_size)
+
+zzz = fused_schedule.split(zz, 2 * target.vector_bytes // 4)
+mmm = fused_schedule.split(mm, 2 * target.vector_bytes // 4)
+iii = fused_schedule.split(ii, 2 * target.vector_bytes // 4)
+jjj = fused_schedule.split(jj, 2 * target.vector_bytes // 4)
+fused_schedule.reorder(f1, f2, f3, z, zz, zzz, m, mm, mmm, i, ii, iii, j, jj, jjj)
 
 fused_plan = fused_schedule.create_action_plan()
-fused_plan.vectorize(ii) 
-fused_plan.vectorize(jj)
+
+# fused_plan.unroll(zz)
+# fused_plan.unroll(mm) 
+# fused_plan.unroll(ii) 
+# fused_plan.unroll(jj)
+
+fused_plan.vectorize(zzz) 
+fused_plan.vectorize(mmm) 
+fused_plan.vectorize(iii) 
+fused_plan.vectorize(jjj)
 
 package = rp.Package()
 package.add_function(fused_plan, args=(Output, Input), base_name="vectorized")
