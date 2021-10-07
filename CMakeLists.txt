@@ -121,7 +121,7 @@ elseif(IS_GCC_LIKE)
   # http://gcc.gnu.org/onlinedocs/gcc-4.8.2/gcc/i386-and-x86-64-Options.html#i38
   # 6-and-x86-64-Options add_definitions(-march=corei7-avx -mtune=corei7-avx)
   add_definitions(-march=native)
-  add_definitions(-ffast-math)
+  add_definitions(-ffp-contract=fast)
 endif()
 
 if(COMPILER_IS_CLANG)

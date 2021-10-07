@@ -43,6 +43,7 @@ div_schedule = div_nest.create_schedule()
 fused_schedule1 = rp.fuse((init_schedule, max_schedule), partial=0)
 fused_schedule2 = rp.fuse((fused_schedule1, exp_schedule), partial=0)
 fused_schedule = rp.fuse((fused_schedule2, div_schedule), partial=0)
+
 f1, f2, f3, z, m, i, j = fused_schedule.get_indices()
 
 
@@ -63,15 +64,16 @@ fused_schedule.reorder(f1, f2, f3, z, zz, zzz, m, mm, mmm, i, ii, iii, j, jj, jj
 
 fused_plan = fused_schedule.create_action_plan()
 
-# fused_plan.unroll(zz)
-# fused_plan.unroll(mm) 
-# fused_plan.unroll(ii) 
-# fused_plan.unroll(jj)
+fused_plan.unroll(zz)
+fused_plan.unroll(mm) 
+fused_plan.unroll(ii) 
+fused_plan.unroll(jj)
 
 fused_plan.vectorize(zzz) 
 fused_plan.vectorize(mmm) 
-fused_plan.vectorize(iii) 
+# fused_plan.vectorize(iii) 
 fused_plan.vectorize(jjj)
+
 
 package = rp.Package()
 package.add_function(fused_plan, args=(Output, Input), base_name="vectorized")
