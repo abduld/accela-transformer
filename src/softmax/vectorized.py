@@ -30,8 +30,14 @@ i = exp_nest.get_indices()
 @exp_nest.iteration_logic
 def _():
     Output[i] = rp.exp(Input[i] - MaxVal[0])
-    Denom[0] += Output[i]
 exp_schedule = exp_nest.create_schedule()
+
+accum_nest = rp.Nest(shape=(N,))
+a = accum_nest.get_indices()
+@exp_nest.iteration_logic
+def _():
+    Denom[0] += Output[i]
+accum_schedule = accum_nest.create_schedule()
 
 div_nest = rp.Nest(shape=(N, ))
 j = div_nest.get_indices()
@@ -42,9 +48,10 @@ div_schedule = div_nest.create_schedule()
 
 fused_schedule1 = rp.fuse((init_schedule, max_schedule), partial=0)
 fused_schedule2 = rp.fuse((fused_schedule1, exp_schedule), partial=0)
-fused_schedule = rp.fuse((fused_schedule2, div_schedule), partial=0)
+fused_schedule3 = rp.fuse((fused_schedule2, accum_schedule), partial=0)
+fused_schedule = rp.fuse((fused_schedule3, div_schedule), partial=0)
 
-f1, f2, f3, z, m, i, j = fused_schedule.get_indices()
+f1, f2, f3, f4, z, m, i, a, j = fused_schedule.get_indices()
 
 
 fused_plan = fused_schedule.create_action_plan()
@@ -54,24 +61,28 @@ tile_size = 128
 zz = fused_schedule.split(z, tile_size)
 mm = fused_schedule.split(m, tile_size)
 ii = fused_schedule.split(i, tile_size)
+aa = fused_schedule.split(a, tile_size)
 jj = fused_schedule.split(j, tile_size)
 
 zzz = fused_schedule.split(zz, 2 * target.vector_bytes // 4)
 mmm = fused_schedule.split(mm, 2 * target.vector_bytes // 4)
 iii = fused_schedule.split(ii, 2 * target.vector_bytes // 4)
+aaa = fused_schedule.split(aa, 2 * target.vector_bytes // 4)
 jjj = fused_schedule.split(jj, 2 * target.vector_bytes // 4)
-fused_schedule.reorder(f1, f2, f3, z, zz, zzz, m, mm, mmm, i, ii, iii, j, jj, jjj)
+fused_schedule.reorder(f1, f2, f3, f4, z, zz, zzz, m, mm, mmm, i, ii, iii, a, aa, aaa, j, jj, jjj)
 
 fused_plan = fused_schedule.create_action_plan()
 
-fused_plan.unroll(zz)
-fused_plan.unroll(mm) 
-fused_plan.unroll(ii) 
-fused_plan.unroll(jj)
+# fused_plan.unroll(zz)
+# fused_plan.unroll(mm) 
+# fused_plan.unroll(ii) 
+# fused_plan.unroll(aa) 
+# fused_plan.unroll(jj)
 
 fused_plan.vectorize(zzz) 
 fused_plan.vectorize(mmm) 
-# fused_plan.vectorize(iii) 
+fused_plan.vectorize(iii) 
+fused_plan.vectorize(aaa) 
 fused_plan.vectorize(jjj)
 
 
