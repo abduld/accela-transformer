@@ -183,3 +183,4 @@ link_libraries(
   xtensor::xtensor)
 
 add_subdirectory(src/softmax)
+add_subdirectory(src/batched_softmax)

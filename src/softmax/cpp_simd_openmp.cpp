@@ -15,7 +15,7 @@ static void CPP_SIMD_OpenMP(benchmark::State &state) {
     float sum = 0;
 #pragma omp simd reduction(+ : sum) aligned(inData, outData : XSIMD_DEFAULT_ALIGNMENT)
     for (int idx = 0; idx < N; idx++) {
-      outData[idx] = expf(inData[idx] - maxVal);
+      outData[idx] = std::exp(inData[idx] - maxVal);
       sum += outData[idx];
     }
 #pragma omp simd aligned(outData : 32)
