@@ -23,4 +23,4 @@
 #define MAKE_BENCHMARK_NAME(fn_name) PP_STRINGIFY(MODULE_NAME) "/" PP_STRINGIFY(fn_name)
 
 
-#define ADD_BENCHMARK(fn) BENCHMARK(fn)->Name(MAKE_BENCHMARK_NAME(fn))->Unit(benchmark::kMillisecond)
+#define ADD_BENCHMARK(fn) BENCHMARK(fn)->Name(MAKE_BENCHMARK_NAME(fn))->Unit(benchmark::kMicrosecond)

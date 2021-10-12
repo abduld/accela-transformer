@@ -3,7 +3,7 @@
 import math
 import robopy as acc
 
-N = 2 ** 20
+N = 2 ** 10
 DEV_MODE = False
 
 Input = acc.Array(

@@ -2,4 +2,4 @@
 
 #include "utils.hpp"
 
-static constexpr size_t N = 1 << 20;
+static constexpr size_t N = 1 << 10;

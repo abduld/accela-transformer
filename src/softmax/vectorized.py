@@ -61,6 +61,8 @@ def _():
 
 
 accum_schedule = accum_nest.create_schedule()
+a = accum_schedule.get_indices()
+
 
 div_nest = acc.Nest(shape=(N,))
 j = div_nest.get_indices()
@@ -86,24 +88,24 @@ f4, f3, f2, f1, z, m, i, a, j  = fused_schedule.get_indices()
 fused_plan = fused_schedule.create_action_plan()
 
 target = acc.Target(category=acc.Target.Category.CPU)
-tile_size = 8 * target.vector_bytes // 4
-zz = fused_schedule.split(z, tile_size)
-mm = fused_schedule.split(m, tile_size)
-ii = fused_schedule.split(i, tile_size)
-aa = fused_schedule.split(a, tile_size)
-jj = fused_schedule.split(j, tile_size)
+# tile_size = 8 * target.vector_bytes // 4
+# zz = fused_schedule.split(z, tile_size)
+# mm = fused_schedule.split(m, tile_size)
+# ii = fused_schedule.split(i, tile_size)
+# aa = fused_schedule.split(a, tile_size)
+# jj = fused_schedule.split(j, tile_size)
 
-zzz = fused_schedule.split(zz, 2 * target.vector_bytes // 4)
-mmm = fused_schedule.split(mm, 2 * target.vector_bytes // 4)
-iii = fused_schedule.split(ii, 2 * target.vector_bytes // 4)
-aaa = fused_schedule.split(aa, 2 * target.vector_bytes // 4)
-jjj = fused_schedule.split(jj, 2 * target.vector_bytes // 4)
+zzz = fused_schedule.split(z, 6 * target.vector_bytes // 4)
+mmm = fused_schedule.split(m, 6 * target.vector_bytes // 4)
+iii = fused_schedule.split(i, 6 * target.vector_bytes // 4)
+aaa = fused_schedule.split(a, 6 * target.vector_bytes // 4)
+jjj = fused_schedule.split(j, 6 * target.vector_bytes // 4)
 
-# zzzz = fused_schedule.split(zzz, target.vector_bytes // 4)
-# mmmm = fused_schedule.split(mmm, target.vector_bytes // 4)
-# iiii = fused_schedule.split(iii, target.vector_bytes // 4)
-# aaaa = fused_schedule.split(aaa, target.vector_bytes // 4)
-# jjjj = fused_schedule.split(jjj, target.vector_bytes // 4)
+# zzzz = fused_schedule.split(z, target.vector_bytes // 4)
+# mmmm = fused_schedule.split(m, target.vector_bytes // 4)
+iiii = fused_schedule.split(iii, target.vector_bytes // 4)
+aaaa = fused_schedule.split(aaa, target.vector_bytes // 4)
+# jjjj = fused_schedule.split(j, target.vector_bytes // 4)
 
 # fused_schedule.reorder(
 #     f4, z, zz, f3, m, mm, f2, i, ii, f1, a, aa, j, jj
@@ -123,16 +125,16 @@ jjj = fused_schedule.split(jj, 2 * target.vector_bytes // 4)
 
 # fused_plan = fused_schedule.create_action_plan()
 
-# fused_plan.unroll(zzz)
-# fused_plan.unroll(mmm)
-# fused_plan.unroll(iii)
-# fused_plan.unroll(aaa)
-# fused_plan.unroll(jjj)
+fused_plan.unroll(zzz)
+fused_plan.unroll(mmm)
+fused_plan.unroll(iii)
+fused_plan.unroll(aaa)
+fused_plan.unroll(jjj)
 
 # fused_plan.vectorize(zzzz)
 # fused_plan.vectorize(mmmm)
-# fused_plan.vectorize(iiii)
-# fused_plan.vectorize(aaaa)
+fused_plan.vectorize(iiii)
+fused_plan.vectorize(aaaa)
 # fused_plan.vectorize(jjjj)
 
 
