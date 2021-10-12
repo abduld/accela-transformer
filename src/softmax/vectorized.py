@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import math
 import robopy as acc
-from robopy._lang_python import fast_exp
+# from robopy._lang_python import fast_exp
 
 N = 2 ** 10
 DEV_MODE = False
@@ -50,8 +50,8 @@ i = exp_nest.get_indices()
 
 @exp_nest.iteration_logic
 def _():
-    Output[i] = fast_exp(Input[i] - MaxVal[0])
-    # Output[i] = rp.exp(Input[i] - MaxVal[0])
+    # Output[i] = fast_exp(Input[i] - MaxVal[0])
+    Output[i] = acc.exp(Input[i] - MaxVal[0])
 
 
 exp_schedule = exp_nest.create_schedule()
@@ -85,63 +85,21 @@ fused_schedule = acc.fuse((fused_schedule3, div_schedule), partial=0)
 
 f, f3, f1, z, m, f2, i, a, j = fused_schedule.get_indices()
 
-# print((f, f3, f1, f2, z, m, i, j))
-# print(fused_schedule._fusing_index)
-# print(fused_schedule2._fusing_index)
-# f1, z, f2, m, f3, i, f4, a, j = fused_schedule.get_indices()
-# f1, f2, f3, f4, z, m, i, a, j = fused_schedule.get_indices()
-
-
 fused_plan = fused_schedule.create_action_plan()
 
-# tile_size = 8 * target.vector_bytes // 4
-# zz = fused_schedule.split(z, tile_size)
-# mm = fused_schedule.split(m, tile_size)
-# ii = fused_schedule.split(i, tile_size)
-# aa = fused_schedule.split(a, tile_size)
-# jj = fused_schedule.split(j, tile_size)
+zz = fused_schedule.split(z, 2 * target.vector_bytes // 4)
+mm = fused_schedule.split(m, 2 * target.vector_bytes // 4)
+ii = fused_schedule.split(i, 2 * target.vector_bytes // 4)
+aa = fused_schedule.split(a, 2 * target.vector_bytes // 4)
+jj = fused_schedule.split(j, 2 * target.vector_bytes // 4)
 
-# zzz = fused_schedule.split(z, 4 * target.vector_bytes // 4)
-# mmm = fused_schedule.split(m, 4 * target.vector_bytes // 4)
-# iii = fused_schedule.split(i, 4 * target.vector_bytes // 4)
-# jjj = fused_schedule.split(j, 4 * target.vector_bytes // 4)
+fused_schedule.reorder(f, f3, f1, z, zz, m, mm, f2, i, ii, a, aa, j, jj)
 
-zzzz = fused_schedule.split(z, 2 * target.vector_bytes // 4)
-mmmm = fused_schedule.split(m, 2 * target.vector_bytes // 4)
-iiii = fused_schedule.split(i, 2 * target.vector_bytes // 4)
-aaaa = fused_schedule.split(a, 2 * target.vector_bytes // 4)
-jjjj = fused_schedule.split(j, 2 * target.vector_bytes // 4)
-
-# fused_schedule.reorder(
-#     f4, z, zz, f3, m, mm, f2, i, ii, f1, a, aa, j, jj
-# )
-# fused_schedule.reorder(
-#     f1, f2, f3, f4, z, zz, zzz, zzzz, m, mm, mmm, mmmm, i, ii, iii, iiii, a, aa, aaa, aaaa, j, jj, jjj, jjjj
-# )
-# print((f1, f2, f3, f4))
-# print((z, zz, zzz, m, mm, mmm, i, ii, iii, a, aa, aaa, j, jj, jjj))
-# fused_schedule.reorder(
-#     f1, z, zz, zzz, f2, m, mm, mmm, f3, i, ii, iii, f4, a, aa, aaa, j, jj, jjj
-# )
-# fused_schedule.reorder(
-#     f1, f2, f3, f4, z, zz, zzz, m, mm, mmm, i, ii, iii, a, aa, aaa, j, jj, jjj
-# )
-# fused_schedule.reorder(f1, f2, f3, f4, z, zz, m, mm, i, ii, a, aa, j, jj)
-
-fused_schedule.reorder(f, f3, f1, z, zzzz, m, mmmm, f2, i, iiii, a, aaaa, j, jjjj)
-
-# fused_plan = fused_schedule.create_action_plan()
-
-# fused_plan.unroll(zzz)
-# fused_plan.unroll(mmm)
-# fused_plan.unroll(iii)
-# fused_plan.unroll(jjj)
-
-fused_plan.vectorize(zzzz)
-fused_plan.vectorize(mmmm)
-fused_plan.vectorize(iiii)
-fused_plan.unroll(aaaa)
-fused_plan.vectorize(jjjj)
+fused_plan.vectorize(zz)
+fused_plan.vectorize(mm)
+fused_plan.vectorize(ii)
+fused_plan.unroll(aa) # TODO: Add vectorization
+fused_plan.vectorize(jj)
 
 
 package = acc.Package()
