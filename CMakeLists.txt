@@ -122,6 +122,7 @@ elseif(IS_GCC_LIKE)
   # 6-and-x86-64-Options add_definitions(-march=corei7-avx -mtune=corei7-avx)
   add_definitions(-march=native)
   add_definitions(-ffp-contract=fast)
+  add_definitions(-fno-math-errno)
 endif()
 
 if(COMPILER_IS_CLANG)

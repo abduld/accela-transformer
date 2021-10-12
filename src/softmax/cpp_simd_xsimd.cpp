@@ -2,6 +2,7 @@
 #include "config.hpp"
 #include "utils.hpp"
 
+
 namespace xs = xsimd;
 
 static void CPP_XSIMD(benchmark::State &state) {
