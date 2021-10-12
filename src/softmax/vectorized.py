@@ -61,7 +61,7 @@ def _():
 
 
 accum_schedule = accum_nest.create_schedule()
-a = accum_schedule.get_indices()
+
 
 
 div_nest = acc.Nest(shape=(N,))
