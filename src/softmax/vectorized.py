@@ -2,7 +2,7 @@
 import math
 import robopy as acc
 
-N = 2 ** 20 
+N = 2 ** 10 
 
 Input = acc.Array(
     role=acc.Array.Role.INPUT, element_type=acc.ScalarType.float32, shape=(N,)
@@ -55,9 +55,9 @@ accum_nest = acc.Nest(shape=(N,))
 a = accum_nest.get_indices()
 
 
-@exp_nest.iteration_logic
+@accum_nest.iteration_logic
 def _():
-    Denom[0] += Output[i]
+    Denom[0] += Output[a]
 
 
 accum_schedule = accum_nest.create_schedule()
@@ -78,8 +78,9 @@ fused_schedule2 = acc.fuse((fused_schedule1, exp_schedule), partial=0)
 fused_schedule3 = acc.fuse((fused_schedule2, accum_schedule), partial=0)
 fused_schedule = acc.fuse((fused_schedule3, div_schedule), partial=0)
 
+f4, f3, f2, f1, z, m, i, a, j  = fused_schedule.get_indices()
 # f1, z, f2, m, f3, i, f4, a, j = fused_schedule.get_indices()
-f1, f2, f3, f4, z, m, i, a, j = fused_schedule.get_indices()
+# f1, f2, f3, f4, z, m, i, a, j = fused_schedule.get_indices()
 
 
 fused_plan = fused_schedule.create_action_plan()
@@ -104,6 +105,9 @@ jjj = fused_schedule.split(jj, 2 * target.vector_bytes // 4)
 # aaaa = fused_schedule.split(aaa, target.vector_bytes // 4)
 # jjjj = fused_schedule.split(jjj, target.vector_bytes // 4)
 
+# fused_schedule.reorder(
+#     f4, z, zz, f3, m, mm, f2, i, ii, f1, a, aa, j, jj
+# )
 # fused_schedule.reorder(
 #     f1, f2, f3, f4, z, zz, zzz, zzzz, m, mm, mmm, mmmm, i, ii, iii, iiii, a, aa, aaa, aaaa, j, jj, jjj, jjjj
 # )

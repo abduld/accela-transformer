@@ -57,9 +57,9 @@ accum_nest = acc.Nest(shape=(N,))
 a = accum_nest.get_indices()
 
 
-@exp_nest.iteration_logic
+@accum_nest.iteration_logic
 def _():
-    Denom[0] += Output[i]
+    Denom[0] += Output[a]
 
 
 accum_schedule = accum_nest.create_schedule()
