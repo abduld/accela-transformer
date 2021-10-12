@@ -1,24 +1,23 @@
 #!/usr/bin/env python3
 import math
-import robopy as rp
+import robopy as acc
 
-N = 2 ** 20
-DEV_MODE = False
+N = 2 ** 20 
 
-Input = rp.Array(
-    role=rp.Array.Role.INPUT, element_type=rp.ScalarType.float32, shape=(N,)
+Input = acc.Array(
+    role=acc.Array.Role.INPUT, element_type=acc.ScalarType.float32, shape=(N,)
 )
-Output = rp.Array(
-    role=rp.Array.Role.INPUT_OUTPUT, element_type=rp.ScalarType.float32, shape=(N,)
+Output = acc.Array(
+    role=acc.Array.Role.INPUT_OUTPUT, element_type=acc.ScalarType.float32, shape=(N,)
 )
-Denom = rp.Array(
-    role=rp.Array.Role.TEMP, element_type=rp.ScalarType.float32, shape=(1,)
+Denom = acc.Array(
+    role=acc.Array.Role.TEMP, element_type=acc.ScalarType.float32, shape=(1,)
 )
-MaxVal = rp.Array(
-    role=rp.Array.Role.TEMP, element_type=rp.ScalarType.float32, shape=(1,)
+MaxVal = acc.Array(
+    role=acc.Array.Role.TEMP, element_type=acc.ScalarType.float32, shape=(1,)
 )
 
-init_nest = rp.Nest(shape=(1,))
+init_nest = acc.Nest(shape=(1,))
 z = init_nest.get_indices()
 
 
@@ -30,29 +29,29 @@ def _():
 
 init_schedule = init_nest.create_schedule()
 
-max_nest = rp.Nest(shape=(N,))
+max_nest = acc.Nest(shape=(N,))
 m = max_nest.get_indices()
 
 
 @max_nest.iteration_logic
 def _():
-    MaxVal[0] = rp.max(MaxVal[0], Input[m])
+    MaxVal[0] = acc.max(MaxVal[0], Input[m])
 
 
 max_schedule = max_nest.create_schedule()
 
-exp_nest = rp.Nest(shape=(N,))
+exp_nest = acc.Nest(shape=(N,))
 i = exp_nest.get_indices()
 
 
 @exp_nest.iteration_logic
 def _():
-    Output[i] = rp.exp(Input[i] - MaxVal[0])
+    Output[i] = acc.exp(Input[i] - MaxVal[0])
 
 
 exp_schedule = exp_nest.create_schedule()
 
-accum_nest = rp.Nest(shape=(N,))
+accum_nest = acc.Nest(shape=(N,))
 a = accum_nest.get_indices()
 
 
@@ -63,7 +62,7 @@ def _():
 
 accum_schedule = accum_nest.create_schedule()
 
-div_nest = rp.Nest(shape=(N,))
+div_nest = acc.Nest(shape=(N,))
 j = div_nest.get_indices()
 
 
@@ -74,19 +73,20 @@ def _():
 
 div_schedule = div_nest.create_schedule()
 
-fused_schedule1 = rp.fuse((init_schedule, max_schedule), partial=0)
-fused_schedule2 = rp.fuse((fused_schedule1, exp_schedule), partial=0)
-fused_schedule3 = rp.fuse((fused_schedule2, accum_schedule), partial=0)
-fused_schedule = rp.fuse((fused_schedule3, div_schedule), partial=0)
+fused_schedule1 = acc.fuse((init_schedule, max_schedule), partial=0)
+fused_schedule2 = acc.fuse((fused_schedule1, exp_schedule), partial=0)
+fused_schedule3 = acc.fuse((fused_schedule2, accum_schedule), partial=0)
+fused_schedule = acc.fuse((fused_schedule3, div_schedule), partial=0)
 
+# f1, z, f2, m, f3, i, f4, a, j = fused_schedule.get_indices()
 f1, f2, f3, f4, z, m, i, a, j = fused_schedule.get_indices()
 
 
 fused_plan = fused_schedule.create_action_plan()
 
-target = rp.Target(category=rp.Target.Category.CPU)
-tile_size = 32 * target.vector_bytes // 4
-# zz = fused_schedule.split(z, tile_size)
+target = acc.Target(category=acc.Target.Category.CPU)
+tile_size = 8 * target.vector_bytes // 4
+zz = fused_schedule.split(z, tile_size)
 mm = fused_schedule.split(m, tile_size)
 ii = fused_schedule.split(i, tile_size)
 aa = fused_schedule.split(a, tile_size)
@@ -97,25 +97,41 @@ mmm = fused_schedule.split(mm, 2 * target.vector_bytes // 4)
 iii = fused_schedule.split(ii, 2 * target.vector_bytes // 4)
 aaa = fused_schedule.split(aa, 2 * target.vector_bytes // 4)
 jjj = fused_schedule.split(jj, 2 * target.vector_bytes // 4)
-fused_schedule.reorder(
-    f1, f2, f3, f4, z, zz, zzz, m, mm, mmm, i, ii, iii, a, aa, aaa, j, jj, jjj
-)
+
+# zzzz = fused_schedule.split(zzz, target.vector_bytes // 4)
+# mmmm = fused_schedule.split(mmm, target.vector_bytes // 4)
+# iiii = fused_schedule.split(iii, target.vector_bytes // 4)
+# aaaa = fused_schedule.split(aaa, target.vector_bytes // 4)
+# jjjj = fused_schedule.split(jjj, target.vector_bytes // 4)
+
+# fused_schedule.reorder(
+#     f1, f2, f3, f4, z, zz, zzz, zzzz, m, mm, mmm, mmmm, i, ii, iii, iiii, a, aa, aaa, aaaa, j, jj, jjj, jjjj
+# )
+# print((f1, f2, f3, f4))
+# print((z, zz, zzz, m, mm, mmm, i, ii, iii, a, aa, aaa, j, jj, jjj))
+# fused_schedule.reorder(
+#     f1, z, zz, zzz, f2, m, mm, mmm, f3, i, ii, iii, f4, a, aa, aaa, j, jj, jjj
+# )
+# fused_schedule.reorder(
+#     f1, f2, f3, f4, z, zz, zzz, m, mm, mmm, i, ii, iii, a, aa, aaa, j, jj, jjj
+# )
+# fused_schedule.reorder(f1, f2, f3, f4, z, zz, m, mm, i, ii, a, aa, j, jj)
 
 # fused_plan = fused_schedule.create_action_plan()
 
-fused_plan.unroll(zz)
-fused_plan.unroll(mm)
-fused_plan.unroll(ii)
-fused_plan.unroll(aa)
-fused_plan.unroll(jj)
+# fused_plan.unroll(zzz)
+# fused_plan.unroll(mmm)
+# fused_plan.unroll(iii)
+# fused_plan.unroll(aaa)
+# fused_plan.unroll(jjj)
 
-fused_plan.vectorize(zzz)
-fused_plan.vectorize(mmm)
-fused_plan.vectorize(iii)
-fused_plan.vectorize(aaa)
-fused_plan.vectorize(jjj)
+# fused_plan.vectorize(zzzz)
+# fused_plan.vectorize(mmmm)
+# fused_plan.vectorize(iiii)
+# fused_plan.vectorize(aaaa)
+# fused_plan.vectorize(jjjj)
 
 
-package = rp.Package()
+package = acc.Package()
 package.add_function(fused_plan, args=(Output, Input), base_name="vectorized")
-package.build(name="vectorized", format=rp.Package.Format.HAT)
+package.build(name="vectorized", format=acc.Package.Format.HAT)
