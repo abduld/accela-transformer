@@ -139,6 +139,7 @@ elseif(IS_GCC_LIKE)
   add_definitions(-fno-math-errno)
   add_definitions(-fno-semantic-interposition)
   add_definitions(-flto) 
+  add_definitions(-fno-omit-frame-pointer)
 endif()
 
 if(COMPILER_IS_CLANG)

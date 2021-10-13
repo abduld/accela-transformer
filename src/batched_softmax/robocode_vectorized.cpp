@@ -10,6 +10,7 @@ static void BENCHMARK_NAME(Robocode_Vectorized)(benchmark::State& state) {
   const auto inData = in.data();
   auto outData      = out.data();
   for (auto _ : state) {
+#if 0
     std::vector<float, xsimd::aligned_allocator<float, XSIMD_DEFAULT_ALIGNMENT>> maxElements(
         BATCH_SIZE, std::numeric_limits<float>::min()),
         denominator(BATCH_SIZE, 0);
@@ -18,9 +19,12 @@ static void BENCHMARK_NAME(Robocode_Vectorized)(benchmark::State& state) {
     vectorized_exp(outData, inData, maxData);
     vectorized_accum(denomData, outData);
     vectorized_div(denomData, outData);
-    benchmark::DoNotOptimize(outData);
     benchmark::DoNotOptimize(maxData);
     benchmark::DoNotOptimize(denomData);
+#else
+    vectorized(outData, inData);
+#endif
+    benchmark::DoNotOptimize(outData);
     benchmark::ClobberMemory();
   }
   const int64_t items_processed = state.iterations() * N;
