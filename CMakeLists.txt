@@ -205,3 +205,4 @@ link_libraries(
 
 add_subdirectory(src/softmax)
 add_subdirectory(src/batched_softmax)
+add_subdirectory(src/scaled_dot_product_attention)
