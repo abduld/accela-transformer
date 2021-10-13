@@ -14,7 +14,7 @@ if(POLICY CMP0025)
   cmake_policy(SET CMP0025 NEW)
 endif()
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -86,7 +86,7 @@ if(IS_GCC_LIKE AND NOT COMPILER_IS_CLANG)
   set(COMPILER_IS_GCC TRUE)
 endif()
 
-set(XTENSOR_USE_XSIMD 1) # see https://xtensor.readthedocs.io/en/latest/build-options.html#external-dependencies
+set(XTENSOR_USE_XSIMD ON) # see https://xtensor.readthedocs.io/en/latest/build-options.html#external-dependencies
 
 find_package(fmt REQUIRED)
 find_package(benchmark REQUIRED)
@@ -96,7 +96,20 @@ find_package(nlohmann_json REQUIRED)
 find_package(xsimd REQUIRED)
 find_package(xtensor REQUIRED)
 find_package(OpenMP REQUIRED)
+find_package(Python COMPONENTS Development)
 find_package(PythonInterp REQUIRED)
+find_package(PythonLibs REQUIRED)
+
+ 
+
+
+execute_process(
+    COMMAND python -c "import torch; import os; print(os.path.dirname(torch.__file__), end='')"
+    OUTPUT_VARIABLE TorchPath
+)
+message(STATUS "TorchPath = ${TorchPath}")
+
+find_package(Torch HINTS ${TorchPath})
 
 if(OPENMP_FOUND)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
@@ -122,7 +135,9 @@ elseif(IS_GCC_LIKE)
   # 6-and-x86-64-Options add_definitions(-march=corei7-avx -mtune=corei7-avx)
   add_definitions(-march=native)
   add_definitions(-ffp-contract=fast)
-  add_definitions(-fno-math-errno)
+  # add_definitions(-fno-math-errno)
+  # add_definitions(-fno-semantic-interposition)
+  # add_definitions(-flto) 
 endif()
 
 if(COMPILER_IS_CLANG)
@@ -180,7 +195,8 @@ link_libraries(
   clipp::clipp
   OpenBLAS::OpenBLAS
   xsimd::xsimd
-  xtensor::xtensor)
+  xtensor::xtensor 
+  )
 
 add_subdirectory(src/softmax)
 add_subdirectory(src/batched_softmax)

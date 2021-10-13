@@ -2,12 +2,12 @@
 #include "config.hpp"
 #include "utils.hpp"
 
-static void CPP_SIMD_OpenMP(benchmark::State &state) {
+static void BENCHMARK_NAME(CPP_SIMD_OpenMP)(benchmark::State &state) {
   std::vector<float, xsimd::aligned_allocator<float, XSIMD_DEFAULT_ALIGNMENT>> in(N, 1), out(N);
   const auto inData = in.data();
   auto outData      = out.data();
   for (auto _ : state) {
-    auto maxVal = -std::numeric_limits<float>::max();
+    auto maxVal = -std::numeric_limits<float>::min();
 #pragma omp simd reduction(max : maxVal) aligned(inData : XSIMD_DEFAULT_ALIGNMENT)
     for (int idx = 0; idx < N; idx++) {
       maxVal = std::max(maxVal, inData[idx]);
@@ -18,7 +18,7 @@ static void CPP_SIMD_OpenMP(benchmark::State &state) {
       outData[idx] = std::exp(inData[idx] - maxVal);
       sum += outData[idx];
     }
-#pragma omp simd aligned(outData : 32)
+#pragma omp simd aligned(outData : XSIMD_DEFAULT_ALIGNMENT)
     for (int idx = 0; idx < N; idx++) {
       outData[idx] /= sum;
     }
@@ -31,4 +31,4 @@ static void CPP_SIMD_OpenMP(benchmark::State &state) {
   state.counters["Value"] = N * out[0]; // Expected to be 1
 }
 
-ADD_BENCHMARK(CPP_SIMD_OpenMP);
+ADD_BENCHMARK(BENCHMARK_NAME(CPP_SIMD_OpenMP));

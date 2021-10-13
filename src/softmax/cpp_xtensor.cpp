@@ -5,7 +5,7 @@
 #include <xtensor/xadapt.hpp>
 #include <xtensor/xnoalias.hpp>
 
-static void CPP_XTensor(benchmark::State &state) {
+static void BENCHMARK_NAME(CPP_XTensor)(benchmark::State &state) {
   std::vector<float, xsimd::aligned_allocator<float, XSIMD_DEFAULT_ALIGNMENT>> in(N, 1), out(N);
   auto inTensor = xt::adapt(in, {N}), outTensor = xt::adapt(out, {N});
 
@@ -24,4 +24,4 @@ static void CPP_XTensor(benchmark::State &state) {
   state.counters["Value"] = N * out[0]; // Expected to be 1
 }
 
-ADD_BENCHMARK(CPP_XTensor);
+ADD_BENCHMARK(BENCHMARK_NAME(CPP_XTensor));

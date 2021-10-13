@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 import math
 import robopy as acc
-from robopy._lang_python import fast_exp
+from robopy._lang_python import fast_exp_mlas
 
-N = 2 ** 10
+N = 2 ** 20
 DEV_MODE = False
 
 target = acc.Target(category=acc.Target.Category.CPU)
-vector_size = target.vector_bytes // 4
+vector_size = target.vector_bytes // 4 # AVX-2 gives 256-bit registers, which can hold 8 floats
+vector_units = 2 * vector_size # AVX-2 has 16 256-bit registers
+vector_ports = 8 * vector_units
 
 package = acc.Package()
 
@@ -36,8 +38,8 @@ def max():
 
     max_schedule = max_nest.create_schedule()
     (m,) = max_schedule.get_indices()
-    mm = max_schedule.split(m, 8 * vector_size)
-    mmm = max_schedule.split(mm, 2 * vector_size)
+    mm = max_schedule.split(m, vector_ports)
+    mmm = max_schedule.split(mm, vector_units)
 
     max_plan = max_schedule.create_action_plan()
 
@@ -51,14 +53,15 @@ def exp():
     exp_nest = acc.Nest(shape=(N,))
     i = exp_nest.get_indices()
 
+
     @exp_nest.iteration_logic
     def _():
-        Output[i] = fast_exp(Input[i] - MaxVal[0])
+        Output[i] = fast_exp_mlas(Input[i] - MaxVal[0])
 
     exp_schedule = exp_nest.create_schedule()
     (i,) = exp_schedule.get_indices()
-    ii = exp_schedule.split(i, 8 * vector_size)
-    iii = exp_schedule.split(ii, 2 * vector_size)
+    ii = exp_schedule.split(i, vector_ports)
+    iii = exp_schedule.split(ii, vector_units)
 
     exp_plan = exp_schedule.create_action_plan()
 
@@ -80,7 +83,7 @@ def accum():
 
     accum_schedule = accum_nest.create_schedule()
     (a,) = accum_schedule.get_indices()
-    aa = accum_schedule.split(a, 8 * vector_size) 
+    aa = accum_schedule.split(a, vector_ports) 
 
     accum_plan = accum_schedule.create_action_plan()
 
@@ -101,8 +104,8 @@ def div():
 
     div_schedule = div_nest.create_schedule()
     (j,) = div_schedule.get_indices()
-    jj = div_schedule.split(j, 8 * vector_size)
-    jjj = div_schedule.split(jj, 2 * vector_size)
+    jj = div_schedule.split(j, vector_ports)
+    jjj = div_schedule.split(jj, vector_units)
 
     div_plan = div_schedule.create_action_plan()
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 import math
 import robopy as acc
-from robopy._lang_python import fast_exp
+from robopy._lang_python import fast_exp_mlas
 
-N = 2 ** 10
+N = 2 ** 20
 DEV_MODE = False
 
 target = acc.Target(category=acc.Target.Category.CPU)
@@ -51,8 +51,7 @@ i = exp_nest.get_indices()
 
 @exp_nest.iteration_logic
 def _():
-    Output[i] = fast_exp(Input[i] - MaxVal[0])
-    # Output[i] = acc.exp(Input[i] - MaxVal[0])
+    Output[i] = fast_exp_mlas(Input[i] - MaxVal[0]) 
 
 
 exp_schedule = exp_nest.create_schedule()

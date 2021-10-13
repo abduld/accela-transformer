@@ -3,12 +3,12 @@
 
 #include "vectorized_2.hat"
 
-static void Robocode_Vectorized(benchmark::State& state) {
+static void BENCHMARK_NAME(Robocode_Vectorized_2)(benchmark::State& state) {
   std::vector<float, xsimd::aligned_allocator<float, XSIMD_DEFAULT_ALIGNMENT>> in(N, 1), out(N);
   const auto inData = in.data();
   auto outData      = out.data();
   for (auto _ : state) {
-    float denom = 0, maxVal = -std::numeric_limits<float>::max();
+    float denom = 0, maxVal = std::numeric_limits<float>::min();
     vectorized_2_max(&maxVal, inData);
     vectorized_2_exp(outData, inData, &maxVal);
     vectorized_2_accum(&denom, outData);
@@ -22,4 +22,4 @@ static void Robocode_Vectorized(benchmark::State& state) {
   state.counters["Value"] = N * out[0]; // Expected to be 1
 }
 
-ADD_BENCHMARK(Robocode_Vectorized);
+ADD_BENCHMARK(BENCHMARK_NAME(Robocode_Vectorized_2));

@@ -1,7 +1,7 @@
 #include "config.hpp"
 #include "utils.hpp"
 
-static void CPP_Naive(benchmark::State& state) {
+static void BENCHMARK_NAME(CPP_Naive)(benchmark::State& state) {
   std::vector<float, xsimd::aligned_allocator<float, XSIMD_DEFAULT_ALIGNMENT>> in(N, 1), out(N);
   const auto inData = in.data();
   auto outData      = out.data();
@@ -24,4 +24,4 @@ static void CPP_Naive(benchmark::State& state) {
   state.counters["Value"] = N * out[0]; // Expected to be 1
 }
 
-ADD_BENCHMARK(CPP_Naive);
+ADD_BENCHMARK(BENCHMARK_NAME(CPP_Naive));
