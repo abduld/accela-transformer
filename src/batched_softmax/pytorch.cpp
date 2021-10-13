@@ -14,12 +14,12 @@ static void BENCHMARK_NAME(Pytorch)(benchmark::State& state) {
   auto options      = at::TensorOptions().dtype(torch::kFloat32).device(at::kCPU).requires_grad(false);
   torch::Tensor in  = torch::ones({BATCH_SIZE, N}, options),
                 out = torch::zeros({BATCH_SIZE, N}, options);
-  for (auto _ : state) {
-    out.set_(at::_softmax(in, 0, false));
-    benchmark::DoNotOptimize(in.data_ptr());
-    benchmark::DoNotOptimize(out.data_ptr());
-    benchmark::ClobberMemory();
-  }
+  // for (auto _ : state) {
+  //   out.set_(at::_softmax(in, 0, false));
+  //   benchmark::DoNotOptimize(in.data_ptr());
+  //   benchmark::DoNotOptimize(out.data_ptr());
+  //   benchmark::ClobberMemory();
+  // }
   const int64_t items_processed = state.iterations() * N * BATCH_SIZE;
   state.SetItemsProcessed(items_processed);
   state.SetBytesProcessed(items_processed * sizeof(float));

@@ -48,7 +48,7 @@ include(${CMAKE_BINARY_DIR}/conan.cmake)
 
 conan_cmake_configure(REQUIRES
                       fmt/6.1.2
-                      benchmark/1.5.6
+                      benchmark/1.5.5
                       openblas/0.3.17
                       nlohmann_json/3.9.1
                       clipp/1.2.3
@@ -88,6 +88,14 @@ endif()
 
 set(XTENSOR_USE_XSIMD ON) # see https://xtensor.readthedocs.io/en/latest/build-options.html#external-dependencies
 
+execute_process(
+    COMMAND python -c "import torch; import os; print(os.path.dirname(torch.__file__), end='')"
+    OUTPUT_VARIABLE TorchPath
+)
+# message(STATUS "TorchPath = ${TorchPath}")
+
+find_package(Torch HINTS ${TorchPath})
+
 find_package(fmt REQUIRED)
 find_package(benchmark REQUIRED)
 find_package(clipp REQUIRED)
@@ -103,13 +111,6 @@ find_package(PythonLibs REQUIRED)
  
 
 
-execute_process(
-    COMMAND python -c "import torch; import os; print(os.path.dirname(torch.__file__), end='')"
-    OUTPUT_VARIABLE TorchPath
-)
-message(STATUS "TorchPath = ${TorchPath}")
-
-find_package(Torch HINTS ${TorchPath})
 
 if(OPENMP_FOUND)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
@@ -150,6 +151,7 @@ endif(COMPILER_IS_CLANG)
 macro(add_robocode_ MODULE_NAME IMPLEMENTATION_NAME)
   set(_PythonGeneratorFile ${IMPLEMENTATION_NAME}.py)
   set(_OutputObjectFile ${IMPLEMENTATION_NAME}.o)
+  set(_HatFile ${IMPLEMENTATION_NAME}.hat)
   add_custom_command(
     OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}"
     PRE_BUILD
@@ -172,8 +174,10 @@ macro(add_robocode_ MODULE_NAME IMPLEMENTATION_NAME)
     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
     DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${_PythonGeneratorFile}")
   add_custom_target(robocode_${MODULE_NAME}_${IMPLEMENTATION_NAME} ALL
-                    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}")
-  add_dependencies(${MODULE_NAME} "robocode_${MODULE_NAME}_${IMPLEMENTATION_NAME}")
+                    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}"
+                            "${CMAKE_CURRENT_BINARY_DIR}/${_HatFile}")
+  add_dependencies(${MODULE_NAME} "robocode_${MODULE_NAME}_${IMPLEMENTATION_NAME}" "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}")
+  target_link_libraries(${MODULE_NAME} PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}")
   target_sources(${MODULE_NAME} PRIVATE robocode_${IMPLEMENTATION_NAME}.cpp)
 endmacro()
 
