@@ -7,9 +7,9 @@ static void CPP_XSIMD(benchmark::State &state) {
       out(BATCH_SIZE * N);
   for (auto _ : state) {
     for (int ii = 0; ii < BATCH_SIZE; ii++) {
-      const auto inData  = in.data() + ii * N;
-      auto outData       = out.data() + ii * N;
-      float maxVal       = xsimd::reduce(inData, inData + N, inData[0],
+      const auto inData = in.data() + ii * N;
+      auto outData      = out.data() + ii * N;
+      float maxVal      = xsimd::reduce(inData, inData + N, inData[0],
                                    [=](const auto &x, const auto &y) { return xsimd::max(x, y); });
       xsimd::transform(inData, inData + N, outData,
                        [=](const auto &x) { return xsimd::exp(x - maxVal); });
