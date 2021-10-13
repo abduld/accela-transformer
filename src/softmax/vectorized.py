@@ -90,15 +90,15 @@ fused_plan = fused_schedule.create_action_plan()
 
 # mm = fused_schedule.split(m, 8 * vector_size)
 ii = fused_schedule.split(i, 4 * vector_size)
-aa = fused_schedule.split(a, 4 * vector_size)
+# aa = fused_schedule.split(a, 4 * vector_size)
 # jj = fused_schedule.split(j, 8 * vector_size)
 
 mmm = fused_schedule.split(m, 2 * vector_size)
 iii = fused_schedule.split(ii, 2 * vector_size)
-aaa = fused_schedule.split(aa, 2 * vector_size)
+aaa = fused_schedule.split(a, 2 * vector_size)
 jjj = fused_schedule.split(j, 2 * vector_size)
 
-fused_schedule.reorder(f, f3, f1, z, m, mmm, i, a, ii, aa, f2, iii, aaa, j, jjj)
+fused_schedule.reorder(f, f3, f1, z, m, mmm, i, a, ii, f2, iii, aaa, j, jjj)
 
 # fused_plan.unroll(mm)
 fused_plan.unroll(ii)

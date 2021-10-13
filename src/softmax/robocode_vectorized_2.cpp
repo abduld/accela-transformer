@@ -8,8 +8,11 @@ static void Robocode_Vectorized(benchmark::State& state) {
   const auto inData = in.data();
   auto outData      = out.data();
   for (auto _ : state) {
-  float denom = 0, maxVal = -std::numeric_limits<float>::max();
-    max(&maxVal, &denom, inData);
+    float denom = 0, maxVal = -std::numeric_limits<float>::max();
+    vectorized_2_max(&maxVal, inData);
+    vectorized_2_exp(outData, inData, &maxVal);
+    vectorized_2_accum(&denom, outData);
+    vectorized_2_div(&denom, outData);
     benchmark::DoNotOptimize(outData);
     benchmark::ClobberMemory();
   }
