@@ -39,15 +39,15 @@ def max():
 
     max_schedule = max_nest.create_schedule()
     bm, m = max_schedule.get_indices()
-    mm = max_schedule.split(m, vector_ports)
-    mmm = max_schedule.split(mm, vector_units)
+    bmm = max_schedule.split(bm, vector_units)
+    mm = max_schedule.split(m, vector_units)
 
-    max_schedule.reorder(bm, m, mm, mmm)
+    max_schedule.reorder(bm, m, bmm, mm)
 
     max_plan = max_schedule.create_action_plan()
 
-    max_plan.unroll(mm)
-    max_plan.vectorize(mmm)
+    max_plan.unroll(bmm)
+    max_plan.vectorize(mm)
 
     package.add_function(max_plan, args=(MaxVal, Input), base_name="vectorized_max")
 
@@ -63,15 +63,15 @@ def exp():
 
     exp_schedule = exp_nest.create_schedule()
     bi, i = exp_schedule.get_indices()
-    ii = exp_schedule.split(i, vector_ports)
-    iii = exp_schedule.split(ii, vector_units)
+    bii = exp_schedule.split(bi, vector_ports)
+    ii = exp_schedule.split(i, vector_units)
 
-    exp_schedule.reorder(bi, i, ii, iii)
+    exp_schedule.reorder(bi, i, bii, ii)
 
     exp_plan = exp_schedule.create_action_plan()
 
-    exp_plan.unroll(ii)
-    exp_plan.vectorize(iii)
+    exp_plan.unroll(bii)
+    exp_plan.vectorize(ii)
 
     package.add_function(
         exp_plan, args=(Output, Input, MaxVal), base_name="vectorized_exp"
@@ -87,16 +87,14 @@ def accum():
         Denom[ba] += Output[ba, a]
 
     accum_schedule = accum_nest.create_schedule()
-    ba, a = accum_schedule.get_indices()
-    baa = accum_schedule.split(ba, vector_ports) 
-    baaa = accum_schedule.split(baa, vector_ports) 
+    ba, a = accum_schedule.get_indices() 
+    baa = accum_schedule.split(ba, vector_ports)  
 
-    accum_schedule.reorder(ba, a, baa, baaa)
+    accum_schedule.reorder(ba, a, baa)
 
     accum_plan = accum_schedule.create_action_plan()
-
-    accum_plan.unroll(baa)
-    accum_plan.vectorize(baaa)
+ 
+    accum_plan.vectorize(baa)
 
     package.add_function(
         accum_plan, args=(Denom, Output), base_name="vectorized_accum"
@@ -113,15 +111,15 @@ def div():
 
     div_schedule = div_nest.create_schedule()
     bj, j = div_schedule.get_indices()
-    jj = div_schedule.split(j, vector_ports)
-    jjj = div_schedule.split(jj, vector_units)
+    bjj = div_schedule.split(bj, vector_ports)
+    jj = div_schedule.split(j, vector_units)
 
-    div_schedule.reorder(bj, j, jj, jjj)
+    div_schedule.reorder(bj, j, bjj, jj)
 
     div_plan = div_schedule.create_action_plan()
 
-    div_plan.unroll(jj)
-    div_plan.vectorize(jjj)
+    div_plan.unroll(bjj)
+    div_plan.vectorize(jj)
 
     package.add_function(div_plan, args=(Denom, Output), base_name="vectorized_div")
 
