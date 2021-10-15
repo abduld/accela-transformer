@@ -6,20 +6,20 @@
 #include "naive.hat"
 
 static void BENCHMARK_NAME(Robocode_Naive)(benchmark::State& state) {
-  std::vector<float, xsimd::aligned_allocator<float, XSIMD_DEFAULT_ALIGNMENT>> in(BATCH_SIZE * N,
-                                                                                  1),
-      out(BATCH_SIZE * N);
-  const auto inData = in.data();
-  auto outData      = out.data();
+
+  aligned_vector<float> Q(SEQUENCE_LENGTH * DM, 1), K(SEQUENCE_LENGTH * DM, 1),
+      V(SEQUENCE_LENGTH * DM, 1);
+  aligned_vector<float> QK(SEQUENCE_LENGTH * SEQUENCE_LENGTH, 0), Output(SEQUENCE_LENGTH * DM, 1);
+
   for (auto _ : state) {
-    naive(outData, inData);
-    benchmark::DoNotOptimize(outData);
+    aligned_vector<float> maxElements(SEQUENCE_LENGTH, std::numeric_limits<float>::min()),
+        denominator(SEQUENCE_LENGTH, 0);
+    naive_gemm_qk(Q.data(), K.data(), QK.data());
+    naive_softmax(QK.data(), QK.data(), maxElements, denominator);
+    benchmark::DoNotOptimize(Output.data());
+    benchmark::DoNotOptimize(QK.data());
     benchmark::ClobberMemory();
   }
-  const int64_t items_processed = state.iterations() * N;
-  state.SetItemsProcessed(items_processed);
-  state.SetBytesProcessed(items_processed * sizeof(float));
-  state.counters["Value"] = N * out[0]; // Expected to be 1
 }
 
 ADD_BENCHMARK(BENCHMARK_NAME(Robocode_Naive));

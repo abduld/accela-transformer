@@ -4,13 +4,13 @@
 #include "vectorized.hat"
 
 static void BENCHMARK_NAME(Robocode_Vectorized)(benchmark::State& state) {
-  std::vector<float, xsimd::aligned_allocator<float, XSIMD_DEFAULT_ALIGNMENT>> in(BATCH_SIZE * N,
+  aligned_vector<float> in(BATCH_SIZE * N,
                                                                                   1),
       out(BATCH_SIZE * N);
   const auto inData = in.data();
   auto outData      = out.data();
   for (auto _ : state) {
-    std::vector<float, xsimd::aligned_allocator<float, XSIMD_DEFAULT_ALIGNMENT>> maxElements(
+    aligned_vector<float> maxElements(
         BATCH_SIZE, std::numeric_limits<float>::min()),
         denominator(BATCH_SIZE, 0);
     auto maxData = maxElements.data(), denomData = denominator.data(); 

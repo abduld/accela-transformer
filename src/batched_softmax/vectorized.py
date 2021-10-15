@@ -141,6 +141,8 @@ def div_fn(package, Output, Denom):
 
 
 def softmax(package, Output, Input, base_name="vectorized"):
+    global BATCH_SIZE, N
+    BATCH_SIZE, N = Input.shape
     Denom = acc.Array(
         role=acc.Array.Role.TEMP,
         element_type=acc.ScalarType.float32,
@@ -184,7 +186,7 @@ if __name__ == "__main__":
   )
 
   nest, args = softmax(package, Output, Input)
-  package.add_function(nest, args=args, base_name=base_name)
+  package.add_function(nest, args=args, base_name="vectorized")
 
   package.build(
       name="vectorized",

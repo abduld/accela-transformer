@@ -45,12 +45,12 @@ Output = acc.Array(
 package = acc.Package()
 
 gemm_qk_plan, _ = Gemm(Q, K, None, QK, transB=True, alpha=TEMPERATURE_INV, beta=0.0, target=target)
-softmax_plan, _ = softmax(package, QK, QK, base_name="naive_softmax")
+softmax_plan, softmax_args = softmax(package, QK, QK, base_name="naive_softmax")
 gemm_qkv_plan, _ = Gemm(QK, V, None, Output, beta=0.0, target=target)
 
 
 gemm_qk_fn = package.add_function(gemm_qk_plan, args=(Q, K, QK), base_name="naive_gemm_qk")
-softmax_fn = package.add_function(softmax_plan, args=(QK, QK), base_name="naive_softmax")
+softmax_fn = package.add_function(softmax_plan, args=softmax_args, base_name="naive_softmax")
 gemm_qkv_fn = package.add_function(gemm_qkv_plan, args=(QK, V, Output), base_name="naive_gemm_qkv")
 
 

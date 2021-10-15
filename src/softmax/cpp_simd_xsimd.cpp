@@ -7,7 +7,7 @@ namespace xs = xsimd;
 
 static void BENCHMARK_NAME(CPP_XSIMD)(benchmark::State &state) {
   using simd_t = xsimd::simd_type<float>;
-  std::vector<float, xsimd::aligned_allocator<float, XSIMD_DEFAULT_ALIGNMENT>> in(N, 1), out(N);
+  aligned_vector<float> in(N, 1), out(N);
 
   float *inData =
       reinterpret_cast<float *>(__builtin_assume_aligned(in.data(), XSIMD_DEFAULT_ALIGNMENT));

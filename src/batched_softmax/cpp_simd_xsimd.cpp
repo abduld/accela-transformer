@@ -2,7 +2,7 @@
 #include "utils.hpp"
 
 static void BENCHMARK_NAME(CPP_XSIMD_BatchFirst)(benchmark::State &state) {
-  std::vector<float, xsimd::aligned_allocator<float, XSIMD_DEFAULT_ALIGNMENT>> in(BATCH_SIZE * N,
+  aligned_vector<float> in(BATCH_SIZE * N,
                                                                                   1),
       out(BATCH_SIZE * N);
   for (auto _ : state) {
@@ -29,7 +29,7 @@ ADD_BENCHMARK(BENCHMARK_NAME(CPP_XSIMD_BatchFirst));
 
 
 // static void BENCHMARK_NAME(CPP_XSIMD_LengthFirst)(benchmark::State &state) {
-//   std::vector<float, xsimd::aligned_allocator<float, XSIMD_DEFAULT_ALIGNMENT>> in(BATCH_SIZE * N,
+//   aligned_vector<float> in(BATCH_SIZE * N,
 //                                                                                   1),
 //       out(BATCH_SIZE * N);
 //   for (auto _ : state) {
@@ -37,7 +37,7 @@ ADD_BENCHMARK(BENCHMARK_NAME(CPP_XSIMD_BatchFirst));
 //     using simd_t           = xsimd::simd_type<float>;
 //     constexpr auto inc     = simd_t::size;
 //     constexpr auto vecSize = N - N % inc;
-//     std::vector<float, xsimd::aligned_allocator<float, XSIMD_DEFAULT_ALIGNMENT>> maxElements(BATCH_SIZE, std::numeric_limits<float>::min()),
+//     aligned_vector<float> maxElements(BATCH_SIZE, std::numeric_limits<float>::min()),
 //         denominator(BATCH_SIZE, 0);
     
     

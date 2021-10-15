@@ -28,3 +28,7 @@
 
 #define ADD_BENCHMARK_(fn) BENCHMARK(fn)->Unit(benchmark::kMicrosecond)
 #define ADD_BENCHMARK(fn) ADD_BENCHMARK_(fn)
+
+
+template <typename T>
+using aligned_vector = std::vector<T, xsimd::aligned_allocator<T, XSIMD_DEFAULT_ALIGNMENT>>;

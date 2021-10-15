@@ -2,7 +2,7 @@
 #include "utils.hpp"
 
 static void BENCHMARK_NAME(CPP_Naive)(benchmark::State& state) {
-  std::vector<float, xsimd::aligned_allocator<float, XSIMD_DEFAULT_ALIGNMENT>> in(N, 1), out(N);
+  aligned_vector<float> in(N, 1), out(N);
   const auto inData = in.data();
   auto outData      = out.data();
   for (auto _ : state) {

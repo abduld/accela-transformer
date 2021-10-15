@@ -157,12 +157,9 @@ macro(add_robocode_ MODULE_NAME IMPLEMENTATION_NAME)
   set(_HatFile ${IMPLEMENTATION_NAME}.hat)
   add_custom_command(
     OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}"
-    PRE_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy
-            "${CMAKE_CURRENT_SOURCE_DIR}/${_PythonGeneratorFile}"
-            "${CMAKE_CURRENT_BINARY_DIR}/${_PythonGeneratorFile}"
+    PRE_BUILD 
     COMMAND "${PYTHON_EXECUTABLE}"
-            "${CMAKE_CURRENT_BINARY_DIR}/${_PythonGeneratorFile}"
+            "${CMAKE_CURRENT_SOURCE_DIR}/${_PythonGeneratorFile}"
             --argument
     COMMAND ${CMAKE_OBJDUMP}
             --disassemble
@@ -205,6 +202,6 @@ link_libraries(
   xtensor::xtensor 
   )
 
-add_subdirectory(src/softmax)
-add_subdirectory(src/batched_softmax)
+# add_subdirectory(src/softmax)
+# add_subdirectory(src/batched_softmax)
 add_subdirectory(src/scaled_dot_product_attention)

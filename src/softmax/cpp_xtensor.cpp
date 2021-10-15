@@ -6,7 +6,7 @@
 #include <xtensor/xnoalias.hpp>
 
 static void BENCHMARK_NAME(CPP_XTensor)(benchmark::State &state) {
-  std::vector<float, xsimd::aligned_allocator<float, XSIMD_DEFAULT_ALIGNMENT>> in(N, 1), out(N);
+  aligned_vector<float> in(N, 1), out(N);
   auto inTensor = xt::adapt(in, {N}), outTensor = xt::adapt(out, {N});
 
   for (auto _ : state) {

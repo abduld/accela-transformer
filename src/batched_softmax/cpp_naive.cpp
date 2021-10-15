@@ -2,7 +2,7 @@
 #include "utils.hpp"
 
 static void BENCHMARK_NAME(CPP_Naive_BatchFirst)(benchmark::State& state) {
-  std::vector<float, xsimd::aligned_allocator<float, XSIMD_DEFAULT_ALIGNMENT>> in(BATCH_SIZE * N,
+  aligned_vector<float> in(BATCH_SIZE * N,
                                                                                   1),
       out(BATCH_SIZE * N);
   for (auto _ : state) {
@@ -33,11 +33,11 @@ static void BENCHMARK_NAME(CPP_Naive_BatchFirst)(benchmark::State& state) {
 ADD_BENCHMARK(BENCHMARK_NAME(CPP_Naive_BatchFirst));
 
 static void BENCHMARK_NAME(CPP_Naive_LengthFirst)(benchmark::State& state) {
-  std::vector<float, xsimd::aligned_allocator<float, XSIMD_DEFAULT_ALIGNMENT>> in(BATCH_SIZE * N,
+  aligned_vector<float> in(BATCH_SIZE * N,
                                                                                   1),
       out(BATCH_SIZE * N);
   for (auto _ : state) {
-    std::vector<float, xsimd::aligned_allocator<float, XSIMD_DEFAULT_ALIGNMENT>> maxElements(BATCH_SIZE, std::numeric_limits<float>::min()),
+    aligned_vector<float> maxElements(BATCH_SIZE, std::numeric_limits<float>::min()),
         denominator(BATCH_SIZE, 0);
     for (int jj = 0; jj < N; jj++) {
       for (int ii = 0; ii < BATCH_SIZE; ii++) {
@@ -75,11 +75,11 @@ static void BENCHMARK_NAME(CPP_Naive_LengthFirst)(benchmark::State& state) {
 ADD_BENCHMARK(BENCHMARK_NAME(CPP_Naive_LengthFirst));
 
 static void BENCHMARK_NAME(CPP_Naive_Mixed)(benchmark::State& state) {
-  std::vector<float, xsimd::aligned_allocator<float, XSIMD_DEFAULT_ALIGNMENT>> in(BATCH_SIZE * N,
+  aligned_vector<float> in(BATCH_SIZE * N,
                                                                                   1),
       out(BATCH_SIZE * N);
   for (auto _ : state) {
-    std::vector<float, xsimd::aligned_allocator<float, XSIMD_DEFAULT_ALIGNMENT>> maxElements(BATCH_SIZE, std::numeric_limits<float>::min()),
+    aligned_vector<float> maxElements(BATCH_SIZE, std::numeric_limits<float>::min()),
         denominator(BATCH_SIZE, 0);
     for (int jj = 0; jj < N; jj++) {
       for (int ii = 0; ii < BATCH_SIZE; ii++) {
