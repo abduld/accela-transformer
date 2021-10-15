@@ -1,4 +1,15 @@
 
+## GPT2 Dimensions
+
+https://jalammar.github.io/illustrated-gpt2/
+https://data-science-blog.com/blog/2021/04/07/multi-head-attention-mechanism/
+
+## Transformer
+
+https://www.cs.princeton.edu/~smalladi/blog/2020/12/30/Transformer-Architecture/
+
+## Decorator
+
 def package_function(fn):
     def internal_func(*args, **kwargs):
         # This calls the generator function which adds
