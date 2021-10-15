@@ -156,8 +156,8 @@ macro(add_robocode_ MODULE_NAME IMPLEMENTATION_NAME)
   set(_OutputObjectFile ${IMPLEMENTATION_NAME}.o)
   set(_HatFile ${IMPLEMENTATION_NAME}.hat)
   add_custom_command(
-    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}" 
-    PRE_BUILD 
+    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}"
+    PRE_BUILD
     COMMAND "${PYTHON_EXECUTABLE}"
             "${CMAKE_CURRENT_SOURCE_DIR}/${_PythonGeneratorFile}"
             --argument
@@ -173,14 +173,12 @@ macro(add_robocode_ MODULE_NAME IMPLEMENTATION_NAME)
                    ${CMAKE_CURRENT_BINARY_DIR}/${IMPLEMENTATION_NAME}.s
     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
     DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${_PythonGeneratorFile}")
-  add_custom_target(robocode_${MODULE_NAME}_${IMPLEMENTATION_NAME}_TARGET ALL
-                    DEPENDS   "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}" )
-
-  add_library(robocode_${MODULE_NAME}_${IMPLEMENTATION_NAME} STATIC robocode_${IMPLEMENTATION_NAME}.cpp)
-  target_compile_definitions(robocode_${MODULE_NAME}_${IMPLEMENTATION_NAME}  PRIVATE -DMODULE_NAME=${MODULE_NAME})
-  add_dependencies(robocode_${MODULE_NAME}_${IMPLEMENTATION_NAME} "robocode_${MODULE_NAME}_${IMPLEMENTATION_NAME}_TARGET")
-  target_link_libraries(robocode_${MODULE_NAME}_${IMPLEMENTATION_NAME} PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}")
-  target_sources(${MODULE_NAME} PRIVATE robocode_${IMPLEMENTATION_NAME} )
+  add_custom_target(robocode_${MODULE_NAME}_${IMPLEMENTATION_NAME} ALL
+                    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}"
+                            "${CMAKE_CURRENT_BINARY_DIR}/${_HatFile}")
+  add_dependencies(${MODULE_NAME} "robocode_${MODULE_NAME}_${IMPLEMENTATION_NAME}")
+  target_link_libraries(${MODULE_NAME} PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}")
+  target_sources(${MODULE_NAME} PRIVATE robocode_${IMPLEMENTATION_NAME}.cpp)
 endmacro()
 
 macro(add_robocode MODULE_NAME)
@@ -202,7 +200,7 @@ link_libraries(
   OpenBLAS::OpenBLAS
   xsimd::xsimd
   xtensor::xtensor 
-  )
+)
 
 # add_subdirectory(src/softmax)
 # add_subdirectory(src/batched_softmax)
