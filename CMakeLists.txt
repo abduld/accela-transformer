@@ -110,15 +110,15 @@ find_package(Python COMPONENTS Development)
 find_package(PythonInterp REQUIRED)
 find_package(PythonLibs REQUIRED)
 
- 
+if(NOT TARGET OpenMP::OpenMP_CXX)
+    find_package(Threads REQUIRED)
+    add_library(OpenMP::OpenMP_CXX IMPORTED INTERFACE)
+    set_property(TARGET OpenMP::OpenMP_CXX
+                 PROPERTY INTERFACE_COMPILE_OPTIONS ${OpenMP_CXX_FLAGS})
+    # Only works if the same flag is passed to the linker; use CMake 3.9+ otherwise (Intel, AppleClang)
+    set_property(TARGET OpenMP::OpenMP_CXX
+                 PROPERTY INTERFACE_LINK_LIBRARIES ${OpenMP_CXX_FLAGS} Threads::Threads)
 
-
-
-if(OPENMP_FOUND)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-  set(CMAKE_EXE_LINKER_FLAGS
-      "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 endif()
 
 if(MSVC)
@@ -205,8 +205,10 @@ link_libraries(
   OpenBLAS::OpenBLAS
   xsimd::xsimd
   xtensor::xtensor 
+  OpenMP::OpenMP_CXX
 )
 
 # add_subdirectory(src/softmax)
 # add_subdirectory(src/batched_softmax)
-add_subdirectory(src/scaled_dot_product_attention)
+add_subdirectory(src/parallel_batched_softmax)
+# add_subdirectory(src/scaled_dot_product_attention)

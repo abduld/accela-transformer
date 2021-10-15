@@ -6,6 +6,7 @@ static void BENCHMARK_NAME(CPP_XSIMD_BatchFirst)(benchmark::State &state) {
                                                                                   1),
       out(BATCH_SIZE * N);
   for (auto _ : state) {
+    #pragma omp parallel
     for (int ii = 0; ii < BATCH_SIZE; ii++) {
       const auto inData = in.data() + ii * N;
       auto outData      = out.data() + ii * N;
@@ -26,3 +27,4 @@ static void BENCHMARK_NAME(CPP_XSIMD_BatchFirst)(benchmark::State &state) {
 }
 
 ADD_BENCHMARK(BENCHMARK_NAME(CPP_XSIMD_BatchFirst));
+

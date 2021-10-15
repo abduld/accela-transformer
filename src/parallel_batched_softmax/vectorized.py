@@ -35,6 +35,7 @@ def init_fn(package, MaxVal, Denom):
 
     init_plan.unroll(zz)
     init_plan.vectorize(zzz)
+    init_plan.parallelize(indices=(z), policy="static")
 
     return package.add_function(
         init_plan, args=(MaxVal, Denom), base_name="vectorized_init"
@@ -61,6 +62,7 @@ def max_fn(package, MaxVal, Input):
 
     max_plan.unroll(bmm)
     max_plan.vectorize(mm)
+    max_plan.parallelize(indices=(bm,m), policy="static")
 
     return package.add_function(
         max_plan, args=(MaxVal, Input), base_name="vectorized_max"
@@ -86,6 +88,7 @@ def exp_fn(package, Output, Input, MaxVal):
 
     exp_plan.unroll(bii)
     exp_plan.vectorize(ii)
+    exp_plan.parallelize(indices=(bi,i), policy="static")
 
     return package.add_function(
         exp_plan, args=(Output, Input, MaxVal), base_name="vectorized_exp"
@@ -107,6 +110,7 @@ def accum_fn(package, Denom, Output):
     accum_schedule.reorder(ba, a, baa)
 
     accum_plan = accum_schedule.create_action_plan()
+    accum_plan.parallelize(indices=(ba,), policy="static")
 
     accum_plan.vectorize(baa)
 
@@ -134,6 +138,7 @@ def div_fn(package, Output, Denom):
 
     div_plan.unroll(bjj)
     div_plan.vectorize(jj)
+    div_plan.parallelize(indices=(bj,j), policy="static")
 
     return package.add_function(
         div_plan, args=(Output, Denom), base_name="vectorized_div"

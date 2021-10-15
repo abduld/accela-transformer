@@ -9,7 +9,7 @@ import robopy as acc
 from matmul import Gemm
 from batched_softmax.vectorized import softmax
 
-DEV_MODE = True
+DEV_MODE = False
 
 
 BATCH_SIZE = 1
@@ -53,16 +53,13 @@ _, _, MaxElems, Denoms = softmax_args
 gemm_qk_fn = package.add_function(gemm_qk_plan, args=(Q, K, QK), base_name="naive_gemm_qk")
 softmax_fn = package.add_function(softmax_plan, args=softmax_args, base_name="naive_softmax")
 gemm_qkv_fn = package.add_function(gemm_qkv_plan, args=(QK, V, Output), base_name="naive_gemm_qkv")
-
-scaled_dot_product_attention_nest = acc.Nest((1,))
-
-@scaled_dot_product_attention_nest.iteration_logic
-def scaled_dot_product_attention():
+ 
+def scaled_dot_product_attention(Q, K, V, Output, QK, MaxElems, Denoms):
   gemm_qk_fn(Q, K, QK)
   softmax_fn(QK, QK, MaxElems, Denoms)
   gemm_qkv_fn(QK, V, Output)
 
-scaled_dot_product_attention_fn = package.add_function(scaled_dot_product_attention_nest, args=(Q, K, V, Output, QK, MaxElems, Denoms), base_name="naive_scaled_dot_product_attention")
+scaled_dot_product_attention_fn = package.add_function(scaled_dot_product_attention, args=(Q, K, V, Output, QK, MaxElems, Denoms), base_name="naive_scaled_dot_product_attention")
 
 
 
