@@ -19,10 +19,9 @@ static void row_softmax(float *outData0, const float *inData0) {
 }
 
 static void BENCHMARK_NAME(CPP_Naive)(benchmark::State &state) {
-  using vec = aligned_vector<float>;
 
-  vec Q(SEQUENCE_LENGTH * DM, 1), K(SEQUENCE_LENGTH * DM, 1), V(SEQUENCE_LENGTH * DM, 1);
-  vec QK(SEQUENCE_LENGTH * SEQUENCE_LENGTH, 0), Output(SEQUENCE_LENGTH * DM, 0);
+  aligned_vector<float> Q(SEQUENCE_LENGTH * DM, 1), K(SEQUENCE_LENGTH * DM, 1), V(SEQUENCE_LENGTH * DM, 1);
+  aligned_vector<float> QK(SEQUENCE_LENGTH * SEQUENCE_LENGTH, -1), Output(SEQUENCE_LENGTH * DM, -1);
 
   for (auto _ : state) {
 
@@ -41,6 +40,8 @@ static void BENCHMARK_NAME(CPP_Naive)(benchmark::State &state) {
     benchmark::DoNotOptimize(Output.data());
     benchmark::ClobberMemory();
   }
+  state.counters["Value"] = Output[0];  
+  state.counters["QK"] = QK[0];  
 }
 
 ADD_BENCHMARK(BENCHMARK_NAME(CPP_Naive));

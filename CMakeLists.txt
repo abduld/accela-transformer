@@ -176,7 +176,8 @@ macro(add_robocode_ MODULE_NAME IMPLEMENTATION_NAME)
             "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}" >
                    ${CMAKE_CURRENT_BINARY_DIR}/${IMPLEMENTATION_NAME}.s
     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
-    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${_PythonGeneratorFile}" )
+    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${_PythonGeneratorFile}" 
+            "${CMAKE_CURRENT_SOURCE_DIR}/robocode_${IMPLEMENTATION_NAME}.cpp")
   add_custom_target(robocode_${MODULE_NAME}_${IMPLEMENTATION_NAME} ALL
                     DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}"
                             "${CMAKE_CURRENT_BINARY_DIR}/${_HatFile}")
