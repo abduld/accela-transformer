@@ -34,20 +34,18 @@ def row_softmax(a):
   
 @benchmark.register
 @benchmark.option.unit(benchmark.kMicrosecond)
-def scaled_dot_product_numpy(state):
+def scaled_dot_product_numpy(state): 
     q = Q
     k = K
     v = V
     def dropout(x): 
       u1 = np.random.binomial(1,1-ATTN_DROPOUT,size=x.shape)/(1-ATTN_DROPOUT)
-      return x  
+      return x * u1
     output = None
     while state: 
-        attn = np.dot(q / TEMP, k.transpose(1,0))
-        x = attn
+        attn = np.dot(q / TEMP, k.transpose(1,0)) 
         attn = dropout(row_softmax(attn))
-        output = np.dot(attn, v) 
-        output = x
+        output = np.dot(attn, v)  
     # print(output.shape)
     # print(output[0,:10])
 
@@ -63,11 +61,9 @@ def scaled_dot_product_pytorch(state):
     dropout = nn.Dropout(p=ATTN_DROPOUT) 
     output = None
     while state:   
-        attn = torch.matmul(q / TEMP, k.transpose(1,0))
-        x = attn
-        attn = nn.functional.softmax(attn,dim=-1)
-        output = torch.matmul(attn, v) 
-        output = x
+        attn = torch.matmul(q / TEMP, k.transpose(1,0)) 
+        attn = dropout(nn.functional.softmax(attn,dim=-1))
+        output = torch.matmul(attn, v)  
     # print(output.shape)
     # print(output[0,:10])
         
