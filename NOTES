@@ -1,0 +1,12 @@
+
+def package_function(fn):
+    def internal_func(*args, **kwargs):
+        # This calls the generator function which adds
+        # it to the package.
+        functor = fn(*args, **kwargs)
+        # This emits a call to the function.
+        # It removes the first parameter (which is "package")
+        # and only passes the rest of the positional args
+        # (in this Case Study the keyword args are only used by the generator.)
+        functor(args[1:])
+    return internal_func

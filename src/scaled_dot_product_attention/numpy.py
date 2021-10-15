@@ -1,15 +1,11 @@
-
-import random
-import time
-
-
 import google_benchmark as benchmark
-from google_benchmark import Counter
 
 import numpy as np
 
-BATCH_SIZE = 2 ** 10
+BATCH_SIZE = 2 ** 5
 N = 1 ** 6
+
+print(np.random)
 
 def row_softmax(input):
   m = input.max(axis=1)
