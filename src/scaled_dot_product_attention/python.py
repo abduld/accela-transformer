@@ -39,7 +39,7 @@ def scaled_dot_product_numpy(state):
         attn = dropout(row_softmax(attn))
         output = np.dot(attn, v) 
     # print(output.shape)
-    print(output[0,:10])
+    # print(output[0,:10])
 
 
 @benchmark.register
@@ -57,7 +57,7 @@ def scaled_dot_product_pytorch(state):
         attn = dropout(nn.functional.softmax(attn,dim=1))
         output = torch.matmul(attn, v) 
     # print(output.shape)
-    print(output[0,:10])
+    # print(output[0,:10])
         
 
 
