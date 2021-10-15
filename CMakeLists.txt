@@ -26,7 +26,7 @@ if(NOT CMAKE_BUILD_TYPE)
     FORCE)
 endif()
 
-option(USE_TIMERS "Instrument the code by using kernel timers" OFF)
+option(USE_PYTORCH "Use pytorch C++ API" OFF)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
@@ -48,7 +48,7 @@ include(${CMAKE_BINARY_DIR}/conan.cmake)
 
 conan_cmake_configure(REQUIRES
                       fmt/6.1.2
-                      benchmark/1.5.5
+                      benchmark/1.6.0
                       openblas/0.3.17
                       nlohmann_json/3.9.1
                       clipp/1.2.3
@@ -88,6 +88,7 @@ endif()
 
 set(XTENSOR_USE_XSIMD ON) # see https://xtensor.readthedocs.io/en/latest/build-options.html#external-dependencies
 
+if (USE_PYTORCH)
 execute_process(
     COMMAND python -c "import torch; import os; print(os.path.dirname(torch.__file__), end='')"
     OUTPUT_VARIABLE TorchPath
@@ -95,6 +96,7 @@ execute_process(
 # message(STATUS "TorchPath = ${TorchPath}")
 
 find_package(Torch HINTS ${TorchPath})
+endif (USE_PYTORCH)
 
 find_package(fmt REQUIRED)
 find_package(benchmark REQUIRED)

@@ -161,13 +161,12 @@ def softmax(package, Output, Input):
 
     @nest.iteration_logic
     def _():
-        # init(MaxVal, Denom)
+        init(MaxVal, Denom)
         max(MaxVal, Input)
         exp(Output, Input, MaxVal)
         accum(Denom, Output)
         div(Output, Denom)
 
-    print(((Output, Input, MaxVal, Denom)))
     package.add_function(nest, args=(Output, Input,MaxVal, Denom), base_name="vectorized")
 
 
