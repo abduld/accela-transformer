@@ -4,25 +4,36 @@ import numpy as np
 import torch
 
 BATCH_SIZE = 2 ** 10
-N = 1 ** 6
+N = 2 ** 6
 
+np.random.seed(0)
+torch.manual_seed(0)
+input = np.random.rand(BATCH_SIZE, N)
+ 
 @benchmark.register
 @benchmark.option.unit(benchmark.kMicrosecond)
 def batched_softmax_numpy(state):
-    a = np.random.rand(BATCH_SIZE, N)
+    a = input
+    res = None
     while state:
-      m = a.max(axis=1)
-      res = np.exp(a - m)
-      denom = res.sum(axis=1)
-      res = res / denom
+      m = a.max(axis=-1)  
+      res = np.exp(a - np.vstack(m))
+      denom = res.sum(axis=-1) 
+      res = res / np.vstack(denom)
+    # print(res[0,:10])
+    # print(res.shape)
 
 
 @benchmark.register
 @benchmark.option.unit(benchmark.kMicrosecond)
 def batched_softmax_pytorch(state):
-    a = torch.randn(BATCH_SIZE, N)
+    a = torch.from_numpy(input) 
+    # print(input.shape)
+    res = None
     while state:
-        torch.nn.Softmax(a)
+        res = torch.nn.functional.softmax(a,dim=-1)
+    # print(res[0,:10])
+    # print(res.shape)
 
 
 if __name__ == "__main__":
