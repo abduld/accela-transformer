@@ -33,7 +33,7 @@ static void BENCHMARK_NAME(CPP_Naive)(benchmark::State &state) {
 
     cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, /*M=*/SEQUENCE_LENGTH, /*N=*/DM,
                 /*K=*/SEQUENCE_LENGTH,
-                /*alpha=*/TEMPERATURE_INV, QK.data(), /*lda=*/SEQUENCE_LENGTH, V.data(), /*ldb=*/DM,
+                /*alpha=*/1, QK.data(), /*lda=*/SEQUENCE_LENGTH, V.data(), /*ldb=*/DM,
                 /*beta=*/0, Output.data(), /*ldc=*/DM);
 
     benchmark::DoNotOptimize(QK.data());
