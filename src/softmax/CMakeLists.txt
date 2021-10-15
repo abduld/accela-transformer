@@ -12,6 +12,7 @@ add_robocode(${MODULE_NAME} naive vectorized vectorized_2)
 target_compile_definitions(${MODULE_NAME} PRIVATE -DMODULE_NAME=${MODULE_NAME})
 target_include_directories(${MODULE_NAME} SYSTEM PRIVATE
   ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 set_target_properties(${MODULE_NAME}
