@@ -15,8 +15,19 @@ else:
 def current_timing(
     function_sym,
     min_timing_iterations: int = 100,
-    min_time_in_sec: int = 3,
+    min_time_in_sec: int = 1,
 ):
+    """
+    Current Accera strategy
+
+
+    Args:
+        function_sym ([function]): the function to be timed
+        min_time_in_sec (int, optional): min time to run the benchmark. Defaults to 3.
+
+    Returns:
+        double: the average time to run the function
+    """
     timer = perf_counter
     start_time = timer()
     end_time = timer()
@@ -35,15 +46,27 @@ def current_timing(
 
 def new_timing_(
     function_sym,
-    min_time_in_sec: int = 3,
+    min_time_in_sec: int = 1,
 ):
+    """
+    Doubles the batch size until we reach the min runtime.
 
+
+    Args:
+        function_sym ([function]): the function to be timed
+        min_time_in_sec (int, optional): min time to run the benchmark. Defaults to 3.
+
+    Returns:
+        double: the average time to run the function
+    """
     timer = perf_counter
     trials = 1
     time = 0
     secs_elapsed = 0
 
     while True:
+        if trials >= 1e6: # should be enough samples
+            break
         start_time = timer()
         for _ in itertools.repeat(None, trials):
             function_sym()
@@ -58,9 +81,20 @@ def new_timing_(
 
 def new_timing(
     function_sym,
-    min_time_in_sec: int = 3,
+    min_time_in_sec: int = 1,
 ):
+    """
+    Adaptively increases the batch based on the 
+    time it took to complete the previous batch.
 
+    Args:
+        function_sym ([function]): the function to be timed
+        min_time_in_sec (int, optional): min time to run the benchmark. Defaults to 3.
+
+    Returns:
+        double: the average time to run the function
+    """
+    
     timer = perf_counter
     trials = 1
     prev_durr = 0
@@ -72,11 +106,13 @@ def new_timing(
     while True:
         if secs_elapsed > min_time_in_sec:
             break
+        if num_runs >= 10e6: # should be enough samples
+            break
         if prev_durr <= 0:
             prev_durr = 1  # do not divide by 0
         trials = (
             prev_trials * min_time_in_ns / prev_durr
-        )  # new number of trials is a function of the previous duration
+        )  # new number of trials is a function of the previous duration 
         trials += trials / 5  # perform more trials than we need
         trials = min(trials, 100 * prev_trials)  # don't grow too fast
         trials = max(trials, prev_trials + 1)  # make an advance
@@ -102,6 +138,9 @@ def my_bench_fun(N):
 fast_fn = my_bench_fun(2 ** 6)
 slow_fn = my_bench_fun(2 ** 20)
 
+print("current_timing = ", current_timing(slow_fn, min_time_in_sec=2))
+print("new_timing = ", new_timing(slow_fn, min_time_in_sec=2))
+
 current_timing_res = [10e6*current_timing(slow_fn, min_time_in_sec=1) for i in range(20)]
 new_timing_res = [10e6*new_timing(slow_fn, min_time_in_sec=1) for i in range(20)]
 
@@ -118,7 +157,7 @@ print("min = ", np.min(new_timing_res), " , max = ", np.max(new_timing_res))
 print(new_timing_res)
 
 
-USE_GOOGLE_BENCHMARK = True
+USE_GOOGLE_BENCHMARK = False
 if USE_GOOGLE_BENCHMARK:
 
   import google_benchmark as benchmark

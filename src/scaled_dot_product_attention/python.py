@@ -17,13 +17,15 @@ DK = 64
 TEMP = DK ** 0.5
 ATTN_DROPOUT = 0.1
 
+USE_DROPOUT = False
+
 
 np.random.seed(0)
 torch.manual_seed(0)
 
-Q = np.random.randn(SEQUENCE_LENGTH,DK)
-K = np.random.randn(SEQUENCE_LENGTH,DK)
-V = np.random.randn(SEQUENCE_LENGTH,DK)
+Q = np.random.randn(SEQUENCE_LENGTH,DM)
+K = np.random.randn(SEQUENCE_LENGTH,DM)
+V = np.random.randn(SEQUENCE_LENGTH,DM)
 
 def row_softmax(a):
   m = a.max(axis=-1)  
@@ -44,7 +46,9 @@ def scaled_dot_product_numpy(state):
     output = None
     while state: 
         attn = np.dot(q / TEMP, k.transpose(1,0)) 
-        attn = dropout(row_softmax(attn))
+        attn = row_softmax(attn)
+        if USE_DROPOUT:
+          attn = dropout(attn)
         output = np.dot(attn, v)  
     # print(output.shape)
     # print(output[0,:10])
@@ -62,7 +66,9 @@ def scaled_dot_product_pytorch(state):
     output = None
     while state:   
         attn = torch.matmul(q / TEMP, k.transpose(1,0)) 
-        attn = dropout(nn.functional.softmax(attn,dim=-1))
+        attn = nn.functional.softmax(attn,dim=-1)
+        if USE_DROPOUT:
+          attn = dropout(attn)
         output = torch.matmul(attn, v)  
     # print(output.shape)
     # print(output[0,:10])
