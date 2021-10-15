@@ -118,7 +118,7 @@ print("min = ", np.min(new_timing_res), " , max = ", np.max(new_timing_res))
 print(new_timing_res)
 
 
-USE_GOOGLE_BENCHMARK = False
+USE_GOOGLE_BENCHMARK = True
 if USE_GOOGLE_BENCHMARK:
 
   import google_benchmark as benchmark
