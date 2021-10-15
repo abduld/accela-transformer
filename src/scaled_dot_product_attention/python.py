@@ -14,7 +14,7 @@ DV = 64
 NUM_HEADS = 12
 
 DK = 64
-TEMP = DK ** 0.5
+TEMPERATURE = DK ** 0.5
 ATTN_DROPOUT = 0.1
 
 USE_DROPOUT = False
@@ -45,7 +45,7 @@ def scaled_dot_product_numpy(state):
       return x * u1
     output = None
     while state: 
-        attn = np.dot(q / TEMP, k.transpose(1,0)) 
+        attn = np.dot(q / TEMPERATURE, k.transpose(1,0)) 
         attn = row_softmax(attn)
         if USE_DROPOUT:
           attn = dropout(attn)
@@ -65,7 +65,7 @@ def scaled_dot_product_pytorch(state):
     dropout = nn.Dropout(p=ATTN_DROPOUT) 
     output = None
     while state:   
-        attn = torch.matmul(q / TEMP, k.transpose(1,0)) 
+        attn = torch.matmul(q / TEMPERATURE, k.transpose(1,0)) 
         attn = nn.functional.softmax(attn,dim=-1)
         if USE_DROPOUT:
           attn = dropout(attn)

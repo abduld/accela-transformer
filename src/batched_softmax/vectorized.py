@@ -37,7 +37,7 @@ def init_fn(package, MaxVal, Denom):
     init_plan.vectorize(zzz)
 
     return package.add_function(
-        init_plan, args=(MaxVal, Input), base_name="vectorized_init"
+        init_plan, args=(MaxVal, Denom), base_name="vectorized_init"
     )
 
 
@@ -140,7 +140,7 @@ def div_fn(package, Output, Denom):
     )
 
 
-def softmax(package, Output, Input):
+def softmax(package, Output, Input, base_name="vectorized"):
     Denom = acc.Array(
         role=acc.Array.Role.TEMP,
         element_type=acc.ScalarType.float32,
@@ -166,26 +166,27 @@ def softmax(package, Output, Input):
         exp(Output, Input, MaxVal)
         accum(Denom, Output)
         div(Output, Denom)
+    plan = nest.create_action_plan(target)
+    return plan, (Output, Input, MaxVal, Denom)
 
-    package.add_function(nest, args=(Output, Input,MaxVal, Denom), base_name="vectorized")
+if __name__ == "__main__":
+  package = acc.Package()
 
+  Input = acc.Array(
+      role=acc.Array.Role.INPUT,
+      element_type=acc.ScalarType.float32,
+      shape=(BATCH_SIZE, N),
+  )
+  Output = acc.Array(
+      role=acc.Array.Role.INPUT_OUTPUT,
+      element_type=acc.ScalarType.float32,
+      shape=(BATCH_SIZE, N),
+  )
 
-package = acc.Package()
+  nest, args = softmax(package, Output, Input)
+  package.add_function(nest, args=args, base_name=base_name)
 
-Input = acc.Array(
-    role=acc.Array.Role.INPUT,
-    element_type=acc.ScalarType.float32,
-    shape=(BATCH_SIZE, N),
-)
-Output = acc.Array(
-    role=acc.Array.Role.INPUT_OUTPUT,
-    element_type=acc.ScalarType.float32,
-    shape=(BATCH_SIZE, N),
-)
-
-softmax(package, Output, Input)
-
-package.build(
-    name="vectorized",
-    mode=acc.Package.Mode.DEBUG if DEV_MODE else acc.Package.Mode.RELEASE,
-)
+  package.build(
+      name="vectorized",
+      mode=acc.Package.Mode.DEBUG if DEV_MODE else acc.Package.Mode.RELEASE,
+  )
