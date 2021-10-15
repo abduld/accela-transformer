@@ -15,7 +15,7 @@ static void BENCHMARK_NAME(Robocode_Naive)(benchmark::State& state) {
     aligned_vector<float> maxElements(SEQUENCE_LENGTH, std::numeric_limits<float>::min()),
         denominator(SEQUENCE_LENGTH, 0);
     naive_gemm_qk(Q.data(), K.data(), QK.data());
-    naive_softmax(QK.data(), QK.data(), maxElements, denominator);
+    // naive_softmax(QK.data(), QK.data(), maxElements.data(), denominator.data());
     benchmark::DoNotOptimize(Output.data());
     benchmark::DoNotOptimize(QK.data());
     benchmark::ClobberMemory();
