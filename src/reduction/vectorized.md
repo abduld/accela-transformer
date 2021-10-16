@@ -1,8 +1,9 @@
 # Vectorized Accera Implementation
 
-This shows how to implement tree reduction using Accera.
-There are only a few tweaks that we need to make to the [naive](naive.md) Accera implementation to enable vectorization. 
+The following shows how to implement tree reduction using Accera.
+There are only a few tweaks that we need to make to the [naive](src/reduction/naive.md) Accera implementation to enable vectorization. 
 
+## Overview
 
 The idea of tree reduction is rather simple.
 Suppose we are given a vector of length $N$:
@@ -52,8 +53,30 @@ We finally perform a horizontal add on the $2$-element vector to get the output 
 +--+   +--+ 
 ```
 
+The pseudocode of the above strategy can be expressed as:
 
-Writing vectorized reduction in Accera follows from the outline above.
+
+```algorithm
+\begin{algorithm} 
+\begin{algorithmic} 
+\PROCEDURE{VectorizedReduction}{$Input$}
+    \STATE sumVec = \{0, $\ldots$, 0\}
+    \FOR{$i$ = 0 \TO $\frac{N}{VecSize}$}  
+        \STATE sumVec = sumVec + Input[$i$ * VecSize : $(i+1)$ * VecSize]
+    \ENDFOR
+    \STATE sum = 0 
+    \FOR{$k$ = 0 \TO VecSize} 
+        \STATE sum = sum + sumVec[$k$]
+    \ENDFOR
+    \RETURN sum
+\ENDPROCEDURE
+\end{algorithmic}
+\end{algorithm}
+```
+
+## Implementation
+
+Writing vectorized reduction in Accera follows from the pseudocode above.
 First, we need to import the `accera` package:
 
 [](vectorized.py ':include :type=code python :fragment=import-package')
@@ -154,6 +177,8 @@ We then add the fused plan to our package as a function called `vectorized`
 We export our package as an object file called `vectorized`.
 
 [](vectorized.py ':include :type=code python :fragment=export-package')
+
+## Usage
 
 The package can then be used within the C code base. 
 Here we benchmark the `vectorized` function:

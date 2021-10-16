@@ -1,6 +1,6 @@
 # Naive Accera Implementation
 
-The general idea of a naive
+The pseudocode of the naive implementation is:
 
 ```algorithm
 \begin{algorithm} 
@@ -10,14 +10,22 @@ The general idea of a naive
     \FOR{$i$ = 0 \TO N} 
         \STATE sum = sum + Input[$i$]
     \ENDFOR
-
+    \RETURN sum
 \ENDPROCEDURE
 \end{algorithmic}
 \end{algorithm}
 ```
 
 
-[naive.drawio](naive.drawio ':include :type=code drawio')
+<!-- [naive.drawio](naive.drawio ':include :type=code drawio') -->
+
+
+```ditaa
+<------ N ------>
++--+--+--+   +--+
+|  |  |  |...|  |
++--+--+--+   +--+
+``` 
 
 To start, we need to import the Accera package:
 
