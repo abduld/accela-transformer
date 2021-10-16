@@ -40,9 +40,17 @@
     />
     <link
       rel="stylesheet"
-      href="_assets/style/prism.css"
+      href="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/themes/prism-tomorrow.css"
     />
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/plugins/toolbar/prism-toolbar.css">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/plugins/command-line/prism-command-line.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/plugins/line-numbers/prism-line-numbers.css"
+    />
     <style>
       :root {
         --copycode-background: #333;
@@ -53,8 +61,8 @@
         bottom: 0;
       }
       .markdown-section pre[data-lang]::after {
-        content: ""
-      } 
+        content: "";
+      }
     </style>
   </head>
 
@@ -113,6 +121,7 @@
         },
       };
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/prism.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
     <script src="//cdn.jsdelivr.net/npm/docsify-themeable@0"></script>
     <script src="//unpkg.com/docsify-copy-code@2"></script>
@@ -137,13 +146,20 @@
     <script src="//unpkg.com/docsify-plugin-flexible-alerts"></script>
 
     <script src="//unpkg.com/docsify-glossary/dist/docsify-glossary.min.js"></script>
-{{/*  
-    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-llvm.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-clike.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-c.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-cpp.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js"></script>  */}}
-    <script src="_assets/style/prism.js"></script>
+
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1.25.0/components/prism-llvm.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1.25.0/components/prism-clike.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1.25.0/components/prism-c.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1.25.0/components/prism-cmake.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1.25.0/components/prism-cpp.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1.25.0/components/prism-python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/plugins/command-line/prism-command-line.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1.25.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+
+    <!-- <script src="_assets/style/prism.js"></script> -->
 
     <script src="//cdn.jsdelivr.net/npm/pseudocode@latest/build/pseudocode.min.js"></script>
     <script src="//cdn.jsdelivr.net/gh/h-hg/docsify-pseudocode/dist/docsify-pseudocode.min.js"></script>
