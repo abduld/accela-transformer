@@ -1,6 +1,9 @@
 # Benchmark 
 
 
+```sh
+build/bin/reduction  --benchmark_format=csv --benchmark_out=../_assets/results/reduction_amd_epic.csv --benchmark_out_format=csv
+```
 
 
 ---------------------------------------------------------------
