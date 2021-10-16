@@ -45,22 +45,21 @@ f, i, j, k = fused_schedule.get_indices()
  
 ii = fused_schedule.split(i, vector_units) 
 
-# fused_schedule.reorder((f, i, ii, j, k))
-
 fused_plan = fused_schedule.create_action_plan() 
 
 
 
+fused_plan.parallelize(indices=(i, ), policy="static")
 fused_plan.unroll(ii)
 fused_plan.vectorize(j) 
 fused_plan.unroll(k)
 
 
 package = acc.Package()
-package.add_function(fused_plan, args=(Sum, Input, SumVec), base_name="vectorized")
+package.add_function(fused_plan, args=(Sum, Input, SumVec), base_name="parallized")
 
 package.build(
-    name="vectorized",
+    name="parallized",
     format=acc.Package.Format.HAT,
     mode=acc.Package.Mode.DEBUG if DEV_MODE else acc.Package.Mode.RELEASE,
 )
