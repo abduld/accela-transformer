@@ -10,6 +10,7 @@
     content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css">
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pseudocode@latest/build/pseudocode.min.css">
 </head>
 
 <body>
@@ -37,7 +38,7 @@
       },
       markdown: {
         renderer: {
-  
+
           code: function (code, lang) {
             if (lang === 'drawio') {
               if (window.drawioConverter) {
@@ -81,6 +82,7 @@
   <script src="//unpkg.com/@rakutentech/docsify-code-inline/dist/index.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/external-script.min.js"></script>
 
+
   <!--<script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.js"></script>-->
 
 
@@ -98,6 +100,10 @@
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-c.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-cpp.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js"></script>
+
+  <script src="//cdn.jsdelivr.net/npm/pseudocode@latest/build/pseudocode.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/h-hg/docsify-pseudocode/dist/docsify-pseudocode.min.js"></script>
+
 
   <script>mermaid.initialize({ startOnLoad: true });</script>
 
