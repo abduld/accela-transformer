@@ -1,5 +1,11 @@
 {
   "dependencies": {
     "docsify": "^4.12.1"
+  },
+  "scripts": {
+    "convert": "node_modules/.bin/docsify-pdf-converter"
+  },
+  "devDependencies": {
+    "docsify-pdf-converter": "^2.0.7"
   }
 }
