@@ -38,24 +38,22 @@
       rel="stylesheet"
       href="//unpkg.com/@fortawesome/fontawesome-free/css/solid.css"
     />
-    <link
+    <!-- <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/themes/prism-tomorrow.css"
-    />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/plugins/toolbar/prism-toolbar.css">
+    />  -->
     <link
       rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/plugins/command-line/prism-command-line.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/plugins/line-numbers/prism-line-numbers.css"
-    />
+      href="_assets/style/prism-theme.css"
+    /> 
     <style>
       :root {
-        --copycode-background: #333;
+        --copycode-background: rgba(0, 0, 0, 0.089)2);
         --copycode-color: #fff;
         --code-block-padding: 0.75em 1.5em 0.5em 1.5em;
+      }
+      p[data-lang="ditaa"] {
+        text-align:center;
       }
       .docsify-copy-code-button {
         bottom: 0;
@@ -120,8 +118,7 @@
           placeholder: "Search...",
         },
       };
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/prism.min.js"></script>
+    </script> 
     <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
     <script src="//cdn.jsdelivr.net/npm/docsify-themeable@0"></script>
     <script src="//unpkg.com/docsify-copy-code@2"></script>
@@ -153,12 +150,8 @@
     <script src="//cdn.jsdelivr.net/npm/prismjs@1.25.0/components/prism-cmake.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/prismjs@1.25.0/components/prism-cpp.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/prismjs@1.25.0/components/prism-python.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/plugins/toolbar/prism-toolbar.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/plugins/command-line/prism-command-line.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/prismjs@1.25.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
-
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1.25.0/components/prism-wasm.min.js"></script>
+    
     <!-- <script src="_assets/style/prism.js"></script> -->
 
     <script src="//cdn.jsdelivr.net/npm/pseudocode@latest/build/pseudocode.min.js"></script>

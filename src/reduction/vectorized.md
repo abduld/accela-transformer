@@ -1,40 +1,124 @@
 # Vectorized Accera Implementation
 
-
-[](vectorized.py ':include :type=code python :fragment=import-package')
-
-[](vectorized.py ':include :type=code python :fragment=declare-target-dependent-properties')
+This shows how to implement tree reduction using Accera.
+There are only a few tweaks that we need to make to the [naive](naive.md) Accera implementation to enable vectorization. 
 
 
-[`<link href="foo">` html]
+The idea of tree reduction is rather simple.
+Suppose we are given a vector of length $N$:
+
+```ditaa
+<------ N ------>
++--+--+--+=--+--+
+|  |  |  |...|  |
++--+--+--+---+--+
+``` 
+
+We first partition the input into chunks of size `vector_size` (we use `vector_size=2` in the visualization)
 
 
-<pre><code class="language-css">p { color: red }</code></pre>
 
+```ditaa
+<---------- N/2 ---------->
++--+--+ +--+--+     +--+--+
+|  |  | |  |  | ... |  |  |
++--+--+ +--+--+     +--+--+
+<- 2 -> <- 2 -> ... <- 2 ->
+```
 
-```python
-import robopy as acc
+There are $N/2$ of these $2$-element chunks.
+This is just a different view of the input vector and does not change the layout of the data.
+We then proceed by adding the $2$-element chunks with each other:
+
+```ditaa
++--+--+   +--+--+           +--+--+
+|  |  | + |  |  | ... + ... |  |  |
++--+--+   +--+--+           +--+--+
+```
+
+The result is a $2$-element vector. 
+
+```ditaa
++--+--+ 
+|  |  |  
++--+--+ 
+```
+
+We finally perform a horizontal add on the $2$-element vector to get the output scalar value:
+
+```ditaa
++--+   +--+ 
+|  | + |  |  
++--+   +--+ 
 ```
 
 
-<pre class="command-line language-command-line" data-prompt="PS C:\Users\Chris>" data-output="2-19"><code class="language-powershell">dir
+Writing vectorized reduction in Accera follows from the outline above.
+First, we need to import the `accera` package:
+
+[](vectorized.py ':include :type=code python :fragment=import-package')
+
+We then define some constants which are derived from the number of vector bytes on the host system.
+The system which the benchmark is run on has AVX-2 support, therefore the vector bytes is `32`.
+Since the byte count of a single-precision float is `4`, we divide the vector bytes by `4` to get the number of single-precision elements in an AVX-2 vector (which is `8` single-precision floating point values).
+using the `vector_size`, we derive two other constants (`vector_units` and `split_size`) which we picked based on properties of the host  system.
+The reader is encouraged to try other multiples of `vector_size` for these parameters and observe performance differences.
+
+[](vectorized.py ':include :type=code python :fragment=declare-target-dependent-properties')
+
+As in the naive case, we define our inputs
+
+[](vectorized.py ':include :type=code python :fragment=declare-inputs')
+
+We also define an auxillary array which has the same number of elements as the `split_size`.
+The `SumVec` will be used to store intermediate sums during the tree reduction.
+
+[](vectorized.py ':include :type=code python :fragment=declare-input-vec')
 
 
-    Directory: C:\Users\Chris
+[](vectorized.py ':include :type=code python :fragment=declare-vector-reduction-iteration-logic')
+
+[](vectorized.py ':include :type=code python :fragment=declare-horizontal-reduction-iteration-logic')
+
+[](vectorized.py ':include :type=code python :fragment=create-two-schedules')
+
+[](vectorized.py ':include :type=code python :fragment=fuse-two-schedules')
 
 
-Mode                LastWriteTime     Length Name
-----                -------------     ------ ----
-d-r--        10/14/2015   5:06 PM            Contacts
-d-r--        12/12/2015   1:47 PM            Desktop
-d-r--         11/4/2015   7:59 PM            Documents
-d-r--        10/14/2015   5:06 PM            Downloads
-d-r--        10/14/2015   5:06 PM            Favorites
-d-r--        10/14/2015   5:06 PM            Links
-d-r--        10/14/2015   5:06 PM            Music
-d-r--        10/14/2015   5:06 PM            Pictures
-d-r--        10/14/2015   5:06 PM            Saved Games
-d-r--        10/14/2015   5:06 PM            Searches
-d-r--        10/14/2015   5:06 PM            Videos</code></pre>
+```ditaa
++--------+   +-------+    +-------+
+|        +---+ ditaa +--> |       |
+|  Text  |   +-------+    |diagram|
+|Document|   |!magic!|    |       |
+|     {d}|   |       |    |       |
++---+----+   +-------+    +-------+
+    :                         ^
+    |       Lots of work      |
+    +-------------------------+
+```
 
-</section>
+```ditaa
+    0               n
+   +--+=----+--+--+--+
+   |  | ... |  |  |\0|
+   +--+-----+--+--+--+
+     ^        ^
+     |        |
+     |        +-- q moves from the
+     |            end to the start
+     p moves from
+       start to the end
+```
+ 
+
+[](vectorized.py ':include :type=code python :fragment=get-fused-schedule-indices')
+
+[](vectorized.py ':include :type=code python :fragment=split-index-by-vector-units')
+
+[](vectorized.py ':include :type=code python :fragment=create-fused-action-plan')
+
+[](vectorized.py ':include :type=code python :fragment=optimize-indices')
+
+[](vectorized.py ':include :type=code python :fragment=create-package')
+
+[](vectorized.py ':include :type=code python :fragment=export-package')
