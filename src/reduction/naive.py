@@ -16,7 +16,6 @@ Sum = acc.Array(
 accum_nest = acc.Nest(shape=(N,))
 i = accum_nest.get_indices()
 
-
 @accum_nest.iteration_logic
 def _():
     Sum[0] += Input[i]
