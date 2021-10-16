@@ -10,7 +10,9 @@ static void BENCHMARK_NAME(CPP_XSIMD)(benchmark::State &state) {
   for (auto _ : state) {
     float *inData =
         reinterpret_cast<float *>(__builtin_assume_aligned(Input.data(), XSIMD_DEFAULT_ALIGNMENT));
+/// [reduce]
     output = xsimd::reduce(inData, inData + N, 0.0f);
+/// [reduce]
     benchmark::DoNotOptimize(inData);
     benchmark::ClobberMemory();
   }
