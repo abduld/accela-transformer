@@ -13,10 +13,11 @@
       rel="stylesheet"
       href="//cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css"
     />
-    <link
-      rel="stylesheet"
-      href="//cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"
-    />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"
+      integrity="sha256-F/Xda58SPdcUCr+xhSGz9MA2zQBPb0ASEYKohl8UCHc="
+      crossorigin="anonymous"
+    ></script>
     <link
       rel="stylesheet"
       href="//cdn.jsdelivr.net/npm/pseudocode@latest/build/pseudocode.min.css"
@@ -39,13 +40,16 @@
     />
 
     <style>
-      :root { 
-        --copycode-background: #8080806c;
-        --copycode-color     : #fff;
+      :root {
+        --copycode-background: #333;
+        --copycode-color: #fff;
         --code-block-padding: 0.75em 1.5em 0.5em 1.5em;
       }
-      .docsify-copy-code-button { 
+      .docsify-copy-code-button {
         bottom: 0;
+      }
+      .markdown-section pre[data-lang]::after {
+        content: ""
       }
     </style>
   </head>
