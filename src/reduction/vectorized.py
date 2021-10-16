@@ -10,27 +10,28 @@ target = acc.Target(category=acc.Target.Category.CPU)
 vector_size = (
     target.vector_bytes // 4
 )  # AVX-2 gives 256-bit registers, which can hold 8 floats
+split_size = 4 * vector_size
 vector_units = 2 * vector_size  # AVX-2 has 16 256-bit registers
 
 Input = acc.Array(
     role=acc.Array.Role.INPUT, element_type=acc.ScalarType.float32, shape=(N,)
 )
 SumVec = acc.Array(
-    role=acc.Array.Role.TEMP, element_type=acc.ScalarType.float32, shape=(vector_size,)
+    role=acc.Array.Role.TEMP, element_type=acc.ScalarType.float32, shape=(split_size,)
 ) 
 Sum = acc.Array(
     role=acc.Array.Role.INPUT_OUTPUT, element_type=acc.ScalarType.float32, shape=(1,)
 ) 
  
-vec_accum_nest = acc.Nest(shape=(N // vector_size, vector_size))
+vec_accum_nest = acc.Nest(shape=(N // split_size, split_size))
 i, j = vec_accum_nest.get_indices()
 
 @vec_accum_nest.iteration_logic
 def _():
-    SumVec[j] += Input[i * vector_size + j]
+    SumVec[j] += Input[i * split_size + j]
 
  
-finalize_accum_nest = acc.Nest(shape=(vector_size,))
+finalize_accum_nest = acc.Nest(shape=(split_size,))
 k = finalize_accum_nest.get_indices()
 @finalize_accum_nest.iteration_logic
 def _():
@@ -44,7 +45,7 @@ f, i, j, k = fused_schedule.get_indices()
 
 ii = fused_schedule.split(i, vector_units)
 
-fused_schedule.reorder((f, i, ii, j, k))
+# fused_schedule.reorder((f, i, ii, j, k))
 
 fused_plan = fused_schedule.create_action_plan() 
 
@@ -52,7 +53,7 @@ fused_plan = fused_schedule.create_action_plan()
 
 fused_plan.unroll(ii)
 fused_plan.vectorize(j)
-# fused_plan.unroll(k)
+fused_plan.unroll(k)
 
 
 package = acc.Package()
