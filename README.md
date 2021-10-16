@@ -7,6 +7,37 @@ Docsify uses [Prism](https://prismjs.com) to highlight code blocks in your pages
 * C-like - `clike`
 * JavaScript - `javascript`, `js`
 
+
+```ditaa 
+      +--------+
+      |        |
+      |  User  |
+      |        |
+      +--------+
+          ^
+  request |
+          v
+  +-------------+
+  |             |
+  |    Kroki    |
+  |             |---+
+  +-------------+   |
+       ^  ^         | inflate
+       |  |         |
+       v  +---------+
+  +-------------+
+  |             |
+  |    Ditaa    |
+  |             |----+
+  +-------------+    |
+             ^       | process
+             |       |
+             +-------+
+```
+
+
+
+
 Support for [additional languages](https://prismjs.com/#supported-languages) is available by loading the language-specific [grammar files](https://cdn.jsdelivr.net/npm/prismjs@1/components/) via CDN:
 
 ```html
