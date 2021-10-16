@@ -40,16 +40,23 @@ vec_accum_schedule = vec_accum_nest.create_schedule()
 finalize_accum_schedule = finalize_accum_nest.create_schedule()
 
 fused_schedule = acc.fuse((vec_accum_schedule, finalize_accum_schedule), partial=0)
+f, i, j, k = fused_schedule.get_indices()
+
+ii = fused_schedule.split(i, vector_units)
+
+fused_schedule.reorder((f, i, ii, j, k))
 
 fused_plan = fused_schedule.create_action_plan() 
 
-f, i, j, k = fused_schedule.get_indices()
 
-# fused_plan.vectorize(j)
+
+fused_plan.unroll(ii)
+fused_plan.vectorize(j)
+# fused_plan.unroll(k)
 
 
 package = acc.Package()
-package.add_function(fused_plan, args=(Sum, Input), base_name="vectorized")
+package.add_function(fused_plan, args=(Sum, Input, SumVec), base_name="vectorized")
 
 package.build(
     name="vectorized",

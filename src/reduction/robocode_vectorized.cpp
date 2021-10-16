@@ -4,13 +4,15 @@
 
 #include "vectorized.hat"
 
-static void BENCHMARK_NAME(Robocode_Vectorized)(benchmark::State& state) {
+static constexpr int VectorSize = 8;
 
+static void BENCHMARK_NAME(Robocode_Vectorized)(benchmark::State& state) {
   aligned_vector<float> Input(N, 1.0/N);
   float output = 0;
   for (auto _ : state) {
     output = 0;
-    vectorized(&output, Input.data());
+    std::array<float, VectorSize> SumVec{0};
+    vectorized(&output, Input.data(), SumVec.data());
     benchmark::DoNotOptimize(Input.data());
     benchmark::ClobberMemory();
   }
