@@ -83,6 +83,7 @@ function getAdder(int $x): int
 }
 ```
 
+```algorithm
 % This quicksort algorithm is extracted from Chapter 7, Introduction to Algorithms (3rd edition)
 \begin{algorithm}
 \caption{Quicksort}
@@ -108,3 +109,4 @@ function getAdder(int $x): int
 \ENDPROCEDURE
 \end{algorithmic}
 \end{algorithm}
+```
