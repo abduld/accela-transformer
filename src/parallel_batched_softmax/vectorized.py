@@ -35,7 +35,7 @@ def init_fn(package, MaxVal, Denom):
 
     init_plan.unroll(zz)
     init_plan.vectorize(zzz)
-    init_plan.parallelize(indices=(z), policy="static")
+    init_plan.parallelize(indices=(z,), policy="static")
 
     return package.add_function(
         init_plan, args=(MaxVal, Denom), base_name="vectorized_init"
@@ -53,16 +53,16 @@ def max_fn(package, MaxVal, Input):
 
     max_schedule = max_nest.create_schedule()
     bm, m = max_schedule.get_indices()
-    bmm = max_schedule.split(bm, vector_ports)
-    mm = max_schedule.split(m, vector_units)
+    mm = max_schedule.split(m, vector_ports)
+    mmm = max_schedule.split(mm, vector_units)
 
-    max_schedule.reorder(bm, m, bmm, mm)
+    max_schedule.reorder(bm, m, mm, mmm)
 
     max_plan = max_schedule.create_action_plan()
 
-    max_plan.unroll(bmm)
-    max_plan.vectorize(mm)
-    max_plan.parallelize(indices=(bm,m), policy="static")
+    max_plan.unroll(mm)
+    max_plan.vectorize(mmm)
+    max_plan.parallelize(indices=(bm, ), policy="static")
 
     return package.add_function(
         max_plan, args=(MaxVal, Input), base_name="vectorized_max"
@@ -79,16 +79,16 @@ def exp_fn(package, Output, Input, MaxVal):
 
     exp_schedule = exp_nest.create_schedule()
     bi, i = exp_schedule.get_indices()
-    bii = exp_schedule.split(bi, vector_ports)
-    ii = exp_schedule.split(i, vector_units)
+    ii = exp_schedule.split(i, vector_ports)
+    iii = exp_schedule.split(ii, vector_units)
 
-    exp_schedule.reorder(bi, i, bii, ii)
+    exp_schedule.reorder(bi, i, ii, iii)
 
     exp_plan = exp_schedule.create_action_plan()
 
-    exp_plan.unroll(bii)
-    exp_plan.vectorize(ii)
-    exp_plan.parallelize(indices=(bi,i), policy="static")
+    exp_plan.unroll(ii)
+    exp_plan.vectorize(iii)
+    exp_plan.parallelize(indices=(bi, ), policy="static")
 
     return package.add_function(
         exp_plan, args=(Output, Input, MaxVal), base_name="vectorized_exp"
@@ -129,16 +129,16 @@ def div_fn(package, Output, Denom):
 
     div_schedule = div_nest.create_schedule()
     bj, j = div_schedule.get_indices()
-    bjj = div_schedule.split(bj, vector_ports)
-    jj = div_schedule.split(j, vector_units)
+    jj = div_schedule.split(j, vector_ports)
+    jjj = div_schedule.split(jj, vector_units)
 
-    div_schedule.reorder(bj, j, bjj, jj)
+    div_schedule.reorder(bj, j, jj, jjj)
 
     div_plan = div_schedule.create_action_plan()
 
-    div_plan.unroll(bjj)
-    div_plan.vectorize(jj)
-    div_plan.parallelize(indices=(bj,j), policy="static")
+    div_plan.unroll(jj)
+    div_plan.vectorize(jjj)
+    div_plan.parallelize(indices=(bj, ), policy="static")
 
     return package.add_function(
         div_plan, args=(Output, Denom), base_name="vectorized_div"
@@ -173,27 +173,29 @@ def softmax(package, Output, Input, base_name="vectorized"):
         exp(Output, Input, MaxVal)
         accum(Denom, Output)
         div(Output, Denom)
+
     plan = nest.create_action_plan(target)
     return plan, (Output, Input, MaxVal, Denom)
 
+
 if __name__ == "__main__":
-  package = acc.Package()
+    package = acc.Package()
 
-  Input = acc.Array(
-      role=acc.Array.Role.INPUT,
-      element_type=acc.ScalarType.float32,
-      shape=(BATCH_SIZE, N),
-  )
-  Output = acc.Array(
-      role=acc.Array.Role.INPUT_OUTPUT,
-      element_type=acc.ScalarType.float32,
-      shape=(BATCH_SIZE, N),
-  )
+    Input = acc.Array(
+        role=acc.Array.Role.INPUT,
+        element_type=acc.ScalarType.float32,
+        shape=(BATCH_SIZE, N),
+    )
+    Output = acc.Array(
+        role=acc.Array.Role.INPUT_OUTPUT,
+        element_type=acc.ScalarType.float32,
+        shape=(BATCH_SIZE, N),
+    )
 
-  nest, args = softmax(package, Output, Input)
-  package.add_function(nest, args=args, base_name="vectorized")
+    nest, args = softmax(package, Output, Input)
+    package.add_function(nest, args=args, base_name="vectorized")
 
-  package.build(
-      name="vectorized",
-      mode=acc.Package.Mode.DEBUG if DEV_MODE else acc.Package.Mode.RELEASE,
-  )
+    package.build(
+        name="vectorized",
+        mode=acc.Package.Mode.DEBUG if DEV_MODE else acc.Package.Mode.RELEASE,
+    )

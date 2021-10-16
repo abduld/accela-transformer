@@ -150,7 +150,6 @@ if(COMPILER_IS_CLANG)
   add_definitions(-ferror-limit=1)
 endif(COMPILER_IS_CLANG)
 
-
 macro(add_robocode_ MODULE_NAME IMPLEMENTATION_NAME)
   set(_PythonGeneratorFile ${IMPLEMENTATION_NAME}.py)
   set(_OutputObjectFile ${IMPLEMENTATION_NAME}.o)
@@ -206,6 +205,7 @@ link_libraries(
   xsimd::xsimd
   xtensor::xtensor 
   OpenMP::OpenMP_CXX
+  /usr/lib/x86_64-linux-gnu/libomp.so.5
 )
 
 # add_subdirectory(src/softmax)

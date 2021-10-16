@@ -6,7 +6,7 @@ static void BENCHMARK_NAME(CPP_SIMD_OpenMP_BatchFirst)(benchmark::State& state) 
                                                                                   1),
       out(BATCH_SIZE * N);
   for (auto _ : state) {
-    #pragma omp parallel
+    #pragma omp parallel for 
     for (int ii = 0; ii < BATCH_SIZE; ii++) {
       const auto inData = in.data() + ii * N;
       auto outData      = out.data() + ii * N;
@@ -36,104 +36,3 @@ static void BENCHMARK_NAME(CPP_SIMD_OpenMP_BatchFirst)(benchmark::State& state) 
 }
 
 ADD_BENCHMARK(BENCHMARK_NAME(CPP_SIMD_OpenMP_BatchFirst));
-
-static void BENCHMARK_NAME(CPP_SIMD_OpenMP_LengthFirst)(benchmark::State& state) {
-  aligned_vector<float> in(BATCH_SIZE * N,
-                                                                                  1),
-      out(BATCH_SIZE * N);
-  for (auto _ : state) {
-    aligned_vector<float> maxElements(
-        BATCH_SIZE, std::numeric_limits<float>::min()),
-        denominator(BATCH_SIZE, 0);
-    #pragma omp parallel
-    for (int jj = 0; jj < N; jj++) {
-#pragma omp simd
-      for (int ii = 0; ii < BATCH_SIZE; ii++) {
-        const auto inData = in.data() + ii * N;
-        maxElements[ii]   = std::max(maxElements[ii], inData[jj]);
-      }
-    }
-
-    #pragma omp parallel
-    for (int jj = 0; jj < N; jj++) {
-#pragma omp simd
-      for (int ii = 0; ii < BATCH_SIZE; ii++) {
-        const auto inData = in.data() + ii * N;
-        auto outData      = out.data() + ii * N;
-        outData[jj]       = std::exp(inData[jj] - maxElements[ii]);
-        denominator[ii] += outData[jj];
-      }
-    }
-
-    #pragma omp parallel
-    for (int jj = 0; jj < N; jj++) {
-#pragma omp simd
-      for (int ii = 0; ii < BATCH_SIZE; ii++) {
-        auto outData = out.data() + ii * N;
-        outData[jj] /= denominator[ii];
-      }
-    }
-
-    benchmark::DoNotOptimize(out.data());
-    benchmark::DoNotOptimize(maxElements.data());
-    benchmark::DoNotOptimize(denominator.data());
-    benchmark::ClobberMemory();
-  }
-  const int64_t items_processed = state.iterations() * N * BATCH_SIZE;
-  state.SetItemsProcessed(items_processed);
-  state.SetBytesProcessed(items_processed * sizeof(float));
-  state.counters["Value"] = N * out[0]; // Expected to be 1
-}
-
-ADD_BENCHMARK(BENCHMARK_NAME(CPP_SIMD_OpenMP_LengthFirst));
-
-static void BENCHMARK_NAME(CPP_SIMD_OpenMP_Mixed)(benchmark::State& state) {
-  aligned_vector<float> in(BATCH_SIZE * N,
-                                                                                  1),
-      out(BATCH_SIZE * N);
-  for (auto _ : state) {
-    aligned_vector<float> maxElements(
-        BATCH_SIZE, std::numeric_limits<float>::min()),
-        denominator(BATCH_SIZE, 0);
-    #pragma omp parallel
-    for (int jj = 0; jj < N; jj++) {
-#pragma omp simd
-      for (int ii = 0; ii < BATCH_SIZE; ii++) {
-        const auto inData = in.data() + ii * N;
-        maxElements[ii]   = std::max(maxElements[ii], inData[jj]);
-      }
-    }
-
-    #pragma omp parallel
-    for (int jj = 0; jj < N; jj++) {
-#pragma omp simd
-      for (int ii = 0; ii < BATCH_SIZE; ii++) {
-        const auto inData = in.data() + ii * N;
-        auto outData      = out.data() + ii * N;
-        outData[jj]       = std::exp(inData[jj] - maxElements[ii]);
-        denominator[ii] += outData[jj];
-      }
-    }
-
-    #pragma omp parallel
-    for (int ii = 0; ii < BATCH_SIZE; ii++) {
-      auto outData     = out.data() + ii * N;
-      const auto denom = denominator[ii];
-#pragma omp simd
-      for (int jj = 0; jj < N; jj++) {
-        outData[jj] /= denom;
-      }
-    }
-
-    benchmark::DoNotOptimize(out.data());
-    benchmark::DoNotOptimize(maxElements.data());
-    benchmark::DoNotOptimize(denominator.data());
-    benchmark::ClobberMemory();
-  }
-  const int64_t items_processed = state.iterations() * N * BATCH_SIZE;
-  state.SetItemsProcessed(items_processed);
-  state.SetBytesProcessed(items_processed * sizeof(float));
-  state.counters["Value"] = N * out[0]; // Expected to be 1
-}
-
-ADD_BENCHMARK(BENCHMARK_NAME(CPP_SIMD_OpenMP_Mixed));
