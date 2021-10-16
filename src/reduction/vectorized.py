@@ -45,7 +45,7 @@ fused_plan = fused_schedule.create_action_plan()
 
 f, i, j, k = fused_schedule.get_indices()
 
-fused_plan.vectorize(j)
+# fused_plan.vectorize(j)
 
 
 package = acc.Package()

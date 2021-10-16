@@ -2,9 +2,9 @@ set(MODULE_NAME reduction)
 
 add_executable(${MODULE_NAME}
   main.cpp
-  # cpp_naive.cpp 
-  # cpp_simd_openmp.cpp
-  # cpp_simd_xsimd.cpp 
+  cpp_naive.cpp 
+  cpp_simd_openmp.cpp
+  cpp_simd_xsimd.cpp 
 )
 add_robocode(${MODULE_NAME} naive vectorized)
 

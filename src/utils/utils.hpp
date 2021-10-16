@@ -7,6 +7,7 @@
 
 #include <stdint.h>
 #include <string.h>
+#include <numeric>
 
 #include <benchmark/benchmark.h>
 #include <xsimd/xsimd.hpp> 
