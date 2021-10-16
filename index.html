@@ -1,125 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="description" content="Description" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <link
+      rel="stylesheet"
+      href="//cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css"
+    />
+    <link
+      rel="stylesheet"
+      href="//cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="//cdn.jsdelivr.net/npm/pseudocode@latest/build/pseudocode.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="//unpkg.com/@fortawesome/fontawesome-free/css/fontawesome.css"
+    />
+    <link
+      rel="stylesheet"
+      href="//unpkg.com/@fortawesome/fontawesome-free/css/brands.css"
+    />
+    <link
+      rel="stylesheet"
+      href="//unpkg.com/@fortawesome/fontawesome-free/css/regular.css"
+    />
+    <link
+      rel="stylesheet"
+      href="//unpkg.com/@fortawesome/fontawesome-free/css/solid.css"
+    />
 
-<head>
-  <meta charset="UTF-8">
-  <title>Document</title>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  <meta name="description" content="Description">
-  <meta name="viewport"
-    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/pseudocode@latest/build/pseudocode.min.css"> 
-  <link rel="stylesheet" href="//unpkg.com/@fortawesome/fontawesome-free/css/fontawesome.css" />
-  <link rel="stylesheet" href="//unpkg.com/@fortawesome/fontawesome-free/css/brands.css" />
-  <link rel="stylesheet" href="//unpkg.com/@fortawesome/fontawesome-free/css/regular.css" />
-  <link rel="stylesheet" href="//unpkg.com/@fortawesome/fontawesome-free/css/solid.css" />
-</head>
+    <style>
+      :root { 
+        --copycode-background: #8080806c;
+        --copycode-color     : #fff;
+        --code-block-padding: 0.75em 1.5em 0.5em 1.5em;
+      }
+      .docsify-copy-code-button { 
+        bottom: 0;
+      }
+    </style>
+  </head>
 
-<body>
-  <div id="app"></div>
-  <script>
-    window.$docsify = {
-      name: 'Accera Transformer Case Study',
-      repo: '',
-      homepage: 'README.md',
-      loadSidebar: true,
-      executeScript: true,
-      mergeNavbar: true,
-      auto2top: true,
-      maxLevel: 3,
-      subMaxLevel: 3,
-      markdown: {
-        smartypants: true,
-        gfm: true,
-        renderer: {
-          code: function (code, lang) {
-            if (lang === 'drawio') {
-              if (window.drawioConverter) { 
-                return window.drawioConverter(code)
+  <body>
+    <div id="app"></div>
+    <script>
+      window.$docsify = {
+        name: "Accera Transformer Case Study",
+        repo: "",
+        homepage: "README.md",
+        loadSidebar: true,
+        executeScript: true,
+        mergeNavbar: true,
+        auto2top: true,
+        maxLevel: 10,
+        subMaxLevel: 10,
+        markdown: {
+          smartypants: true,
+          gfm: true,
+          renderer: {
+            code: function (code, lang) {
+              if (lang === "drawio") {
+                if (window.drawioConverter) {
+                  return window.drawioConverter(code);
+                } else {
+                  return `<div class='drawio-code'>${code}</div>`;
+                }
               } else {
-                return `<div class='drawio-code'>${code}</div>`
+                return this.origin.code.apply(this, arguments);
               }
-            } else {
-              return this.origin.code.apply(this, arguments);
-            }
-          }
-        }
-      },
-      copyCode: {
-        buttonText : '&#x2398',
-        errorText  : 'Error',
-        successText: 'Copied'
-      },
-      themeable: {
-        responsiveTables: true // default
-      },
-      'flexible-alerts': {
-        style: 'flat'
-      }, 
-      tabs: {
-        persist: true,      // default
-        sync: true,      // default
-        theme: 'classic', // default
-        tabComments: true,      // default
-        tabHeadings: true       // default
-      },
-      search: {
-        depth: 3,
-        noData: 'No results!',
-        placeholder: 'Search...'
-      },
-    }
-  </script>
-  <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
-  <script src="//cdn.jsdelivr.net/npm/docsify-themeable@0"></script>
-  <script src="//unpkg.com/docsify-copy-code@2"></script>
-  <script src="//cdn.jsdelivr.net/npm/docsify-tabs@1"></script>
-  <script src="//unpkg.com/docsify-pagination/dist/docsify-pagination.min.js"></script>
+            },
+          },
+        },
+        copyCode: {
+          buttonText: "&#x2398",
+          errorText: "Error",
+          successText: "Copied",
+        },
+        themeable: {
+          responsiveTables: true, // default
+        },
+        "flexible-alerts": {
+          style: "flat",
+        },
+        tabs: {
+          persist: true, // default
+          sync: true, // default
+          theme: "classic", // default
+          tabComments: true, // default
+          tabHeadings: true, // default
+        },
+        search: {
+          depth: 3,
+          noData: "No results!",
+          placeholder: "Search...",
+        },
+      };
+    </script>
+    <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+    <script src="//cdn.jsdelivr.net/npm/docsify-themeable@0"></script>
+    <script src="//unpkg.com/docsify-copy-code@2"></script>
+    <script src="//cdn.jsdelivr.net/npm/docsify-tabs@1"></script>
+    <script src="//unpkg.com/docsify-pagination/dist/docsify-pagination.min.js"></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/external-script.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/class-change@1"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/external-script.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/class-change@1"></script>
 
-  <script src="//unpkg.com/docsify-kroki"></script>
-  <script src="//cdn.jsdelivr.net/npm/docsify-drawio/viewer.min.js"></script>
-  <script src='//cdn.jsdelivr.net/npm/docsify-drawio/drawio.js'></script>
+    <script src="//unpkg.com/docsify-kroki"></script>
+    <script src="//cdn.jsdelivr.net/npm/docsify-drawio/viewer.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/docsify-drawio/drawio.js"></script>
 
-  <script src="//unpkg.com/@rakutentech/docsify-code-inline/dist/index.min.js"></script> 
+    <script src="//unpkg.com/@rakutentech/docsify-code-inline/dist/index.min.js"></script>
 
+    <!--<script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.js"></script>-->
 
-  <!--<script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.js"></script>-->
+    <script src="//unpkg.com/mermaid/dist/mermaid.js"></script>
+    <script src="//unpkg.com/docsify-mermaid@latest/dist/docsify-mermaid.js"></script>
 
+    <script src="//cdn.jsdelivr.net/npm/docsify-katex@latest/dist/docsify-katex.js"></script>
+    <script src="//unpkg.com/docsify-plugin-flexible-alerts"></script>
 
-  <script src="//unpkg.com/mermaid/dist/mermaid.js"></script>
-  <script src="//unpkg.com/docsify-mermaid@latest/dist/docsify-mermaid.js"></script>
+    <script src="//unpkg.com/docsify-glossary/dist/docsify-glossary.min.js"></script>
 
-  <script src="//cdn.jsdelivr.net/npm/docsify-katex@latest/dist/docsify-katex.js"></script>
-  <script src="//unpkg.com/docsify-plugin-flexible-alerts"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-llvm.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-clike.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-c.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-cpp.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js"></script>
 
-  <script src="//unpkg.com/docsify-glossary/dist/docsify-glossary.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/pseudocode@latest/build/pseudocode.min.js"></script>
+    <script src="//cdn.jsdelivr.net/gh/h-hg/docsify-pseudocode/dist/docsify-pseudocode.min.js"></script>
+    <script src="//unpkg.com/docsify-fontawesome/dist/docsify-fontawesome.min.js"></script>
 
-  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-llvm.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-clike.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-c.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-cpp.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js"></script>
+    <script>
+      mermaid.initialize({ startOnLoad: true });
+    </script>
 
-  <script src="//cdn.jsdelivr.net/npm/pseudocode@latest/build/pseudocode.min.js"></script>
-  <script src="//cdn.jsdelivr.net/gh/h-hg/docsify-pseudocode/dist/docsify-pseudocode.min.js"></script>
-  <script src="//unpkg.com/docsify-fontawesome/dist/docsify-fontawesome.min.js"></script>
-
-
-  <script>mermaid.initialize({ startOnLoad: true });</script>
-
-  <script>
-    (function (Prism) {
-      Prism.languages.cuda = Prism.languages.extend('cpp', {});
-      Prism.languages.opencl = Prism.languages.extend('cpp', {});
-      Prism.languages.mlir = Prism.languages.extend('llvm', {});
-    }(Prism));
-  </script>
-
-</body>
-
+    <script>
+      (function (Prism) {
+        Prism.languages.cuda = Prism.languages.extend("cpp", {});
+        Prism.languages.opencl = Prism.languages.extend("cpp", {});
+        Prism.languages.mlir = Prism.languages.extend("llvm", {});
+      })(Prism);
+    </script>
+  </body>
 </html>
