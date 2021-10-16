@@ -205,10 +205,11 @@ link_libraries(
   xsimd::xsimd
   xtensor::xtensor 
   OpenMP::OpenMP_CXX
-  /usr/lib/x86_64-linux-gnu/libomp.so.5
+  /usr/lib/x86_64-linux-gnu/libomp.so.5 # There must be a better way
 )
 
+add_subdirectory(src/reduction)
 # add_subdirectory(src/softmax)
 # add_subdirectory(src/batched_softmax)
-add_subdirectory(src/parallel_batched_softmax)
+# add_subdirectory(src/parallel_batched_softmax)
 # add_subdirectory(src/scaled_dot_product_attention)
