@@ -7,3 +7,10 @@
   * [CPP SIMD XSIMD](src/reduction/cpp_simd_xsimd.md)
   * [Benchmark](/src/reduction/benchmark.md)
  
+* [SoftMax](/src/softmax/_index.md)
+  * [Accera Naive](/src/softmax/naive.md)
+  * [Accera Vectorized](src/softmax/vectorized.md)
+  * [CPP Naive](src/softmax/cpp_naive.md)
+  * [CPP SIMD OpenMP](src/softmax/cpp_simd_openmp.md)
+  * [CPP SIMD XSIMD](src/softmax/cpp_simd_xsimd.md)
+  * [Benchmark](/src/softmax/benchmark.md)
