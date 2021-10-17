@@ -1,11 +1,11 @@
 #include "config.hpp"
-#include "utils.hpp"
 
 static void BENCHMARK_NAME(CPP_SIMD_OpenMP_BatchFirst)(benchmark::State& state) {
   aligned_vector<float> in(BATCH_SIZE * N,
                                                                                   1),
       out(BATCH_SIZE * N);
   for (auto _ : state) {
+/// [algorithm]
     for (int ii = 0; ii < BATCH_SIZE; ii++) {
       const auto inData = in.data() + ii * N;
       auto outData      = out.data() + ii * N;
@@ -25,6 +25,7 @@ static void BENCHMARK_NAME(CPP_SIMD_OpenMP_BatchFirst)(benchmark::State& state) 
         outData[idx] /= sum;
       }
     }
+/// [algorithm]
     benchmark::DoNotOptimize(out.data());
     benchmark::ClobberMemory();
   }

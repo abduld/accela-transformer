@@ -1,5 +1,4 @@
 #include "config.hpp"
-#include "utils.hpp"
 
 static void BENCHMARK_NAME(CPP_Naive_BatchFirst)(benchmark::State& state) {
   aligned_vector<float> in(BATCH_SIZE * N,
@@ -11,6 +10,7 @@ static void BENCHMARK_NAME(CPP_Naive_BatchFirst)(benchmark::State& state) {
       const auto inEnd   = in.begin() + (ii + 1) * N;
       const auto inData  = in.data() + ii * N;
       auto outData       = out.data() + ii * N;
+/// [batch-first]
       const float max    = *std::max_element(inStart, inEnd);
       float denominator(0);
       for (int j = 0; j < N; j++) {
@@ -20,6 +20,7 @@ static void BENCHMARK_NAME(CPP_Naive_BatchFirst)(benchmark::State& state) {
       for (int j = 0; j < N; j++) {
         outData[j] /= denominator;
       }
+/// [batch-first]
     }
     benchmark::DoNotOptimize(out.data());
     benchmark::ClobberMemory();
@@ -39,6 +40,7 @@ static void BENCHMARK_NAME(CPP_Naive_LengthFirst)(benchmark::State& state) {
   for (auto _ : state) {
     aligned_vector<float> maxElements(BATCH_SIZE, std::numeric_limits<float>::min()),
         denominator(BATCH_SIZE, 0);
+/// [length-first]
     for (int jj = 0; jj < N; jj++) {
       for (int ii = 0; ii < BATCH_SIZE; ii++) {
         const auto inData = in.data() + ii * N;
@@ -61,6 +63,7 @@ static void BENCHMARK_NAME(CPP_Naive_LengthFirst)(benchmark::State& state) {
         outData[jj] /= denominator[ii];
       }
     }
+/// [length-first]
     benchmark::DoNotOptimize(out.data());
     benchmark::DoNotOptimize(maxElements.data());
     benchmark::DoNotOptimize(denominator.data());
@@ -81,6 +84,7 @@ static void BENCHMARK_NAME(CPP_Naive_Mixed)(benchmark::State& state) {
   for (auto _ : state) {
     aligned_vector<float> maxElements(BATCH_SIZE, std::numeric_limits<float>::min()),
         denominator(BATCH_SIZE, 0);
+/// [mixed]
     for (int jj = 0; jj < N; jj++) {
       for (int ii = 0; ii < BATCH_SIZE; ii++) {
         const auto inData = in.data() + ii * N;
@@ -104,6 +108,7 @@ static void BENCHMARK_NAME(CPP_Naive_Mixed)(benchmark::State& state) {
         outData[jj] /= denom;
       }
     }
+/// [mixed]
     benchmark::DoNotOptimize(out.data());
     benchmark::DoNotOptimize(maxElements.data());
     benchmark::DoNotOptimize(denominator.data());

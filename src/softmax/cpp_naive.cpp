@@ -1,5 +1,4 @@
 #include "config.hpp"
-#include "utils.hpp"
 
 static void BENCHMARK_NAME(CPP_Naive)(benchmark::State& state) {
   aligned_vector<float> in(N, 1), out(N);

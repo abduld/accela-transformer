@@ -1,6 +1,5 @@
 
 #include "config.hpp"
-#include "utils.hpp"
 
 static void BENCHMARK_NAME(CPP_Naive)(benchmark::State& state) {
   aligned_vector<float> Input(N, 1.0 / N);

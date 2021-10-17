@@ -1,11 +1,11 @@
 #include "config.hpp"
-#include "utils.hpp"
 
 static void BENCHMARK_NAME(CPP_XSIMD_BatchFirst)(benchmark::State &state) {
   aligned_vector<float> in(BATCH_SIZE * N,
                                                                                   1),
       out(BATCH_SIZE * N);
   for (auto _ : state) {
+/// [algorithm]
     for (int ii = 0; ii < BATCH_SIZE; ii++) {
       const auto inData = in.data() + ii * N;
       auto outData      = out.data() + ii * N;
@@ -16,6 +16,7 @@ static void BENCHMARK_NAME(CPP_XSIMD_BatchFirst)(benchmark::State &state) {
       float totalVal = xsimd::reduce(outData, outData + N, 0.0f);
       xsimd::transform(outData, outData + N, outData, [=](const auto &x) { return x / totalVal; });
     }
+/// [algorithm]
     benchmark::DoNotOptimize(out.data());
     benchmark::ClobberMemory();
   }

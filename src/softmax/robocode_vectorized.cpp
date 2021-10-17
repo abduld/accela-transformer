@@ -1,14 +1,20 @@
 #include "config.hpp"
 #include "utils.hpp"
 
+/// [import-hat]
 #include "vectorized.hat"
+/// [import-hat]
 
 static void BENCHMARK_NAME(Robocode_Vectorized)(benchmark::State& state) {
+/// [declare-input]
   aligned_vector<float> in(N, 1), out(N);
   const auto inData = in.data();
   auto outData      = out.data();
+/// [declare-input]
   for (auto _ : state) {
+/// [use-function]
     vectorized(outData, inData);
+/// [use-function]
     benchmark::DoNotOptimize(outData);
     benchmark::ClobberMemory();
   }

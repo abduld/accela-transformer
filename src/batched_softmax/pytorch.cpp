@@ -6,7 +6,6 @@
 #include <torch/torch.h>
 
 #include "config.hpp"
-#include "utils.hpp"
 
 static void BENCHMARK_NAME(Pytorch)(benchmark::State& state) {
   at::init_num_threads();

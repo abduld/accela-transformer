@@ -1,5 +1,4 @@
 #include "config.hpp"
-#include "utils.hpp"
 
 static void BENCHMARK_NAME(CPP_XSIMD_BatchFirst)(benchmark::State &state) {
   aligned_vector<float> in(BATCH_SIZE * N,

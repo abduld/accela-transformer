@@ -1,7 +1,6 @@
 #include <vector>
 
 #include "config.hpp"
-#include "utils.hpp"
 
 #include "naive.hat"
 
