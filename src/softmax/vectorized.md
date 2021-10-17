@@ -59,21 +59,33 @@ Finally, we fuse all the schedules.
 
 Until now there has been no change to our implementation over the [naive](naive.md) implementation.
 We now apply optimizations on the schedules creates.
-First, we need to get a handle to the indicies created by the fused schedule:
+First, we need to get a handle to the indices created by the fused schedule:
 
 [vectorized.py](vectorized.py ':include :type=code python :fragment=fuse-indices')
 
-
+We split the indices to prepare for vectorization. 
 
 [vectorized.py](vectorized.py ':include :type=code python :fragment=fused-schedule-split')
 
-We then reorder the schedule.
+We then reorder the schedule to facilitate unrolling.
+Since the indices `i` and `a` (corresponding to computing the exponential and aggregating the results) can be performed in parallel, we reorder them so that the inner most loops follow each other.
 
 [vectorized.py](vectorized.py ':include :type=code python :fragment=fused-schedule-reorder')
 
+We create the plan from the scheulde.
+
 [vectorized.py](vectorized.py ':include :type=code python :fragment=fused-plan')
 
+We perform the unrolling and vectorization.
+
+
 [vectorized.py](vectorized.py ':include :type=code python :fragment=fused-plan-unroll-vectorize')
+
+> [!TIP]
+> The user is encouraged to try using different unrolling and vectorization configurations.
+> Some operations might not benefit from vectorization.
+> For example, unrolling the `aa` index.
+
 
 Finally, we export the package.
 
