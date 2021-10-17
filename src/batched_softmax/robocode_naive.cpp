@@ -5,13 +5,13 @@
 /// [import-hat]
 
 static void BENCHMARK_NAME(Robocode_Naive)(benchmark::State& state) {
-/// [declare-input]
+/// [declare-io]
   aligned_vector<float> in(BATCH_SIZE * N,
                                                                                   1),
       out(BATCH_SIZE * N);
   const auto inData = in.data();
   auto outData      = out.data();
-/// [declare-input]
+/// [declare-io]
   for (auto _ : state) {
 /// [use-function]
     naive(outData, inData);

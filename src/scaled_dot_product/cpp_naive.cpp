@@ -2,29 +2,35 @@
 
 #include <cblas.h>
 
+/// [row-softmax]
 template <int NRows, int NCols>
 static void row_softmax(float *outData0, const float *inData0) {
-  for (int ii = 0; ii < NRows; ii++) {
-    const auto inData = inData0 + ii * NCols;
-    auto outData      = outData0 + ii * NCols;
-    float maxVal      = xsimd::reduce(inData, inData + NCols, inData[0],
-                                 [=](const auto &x, const auto &y) { return xsimd::max(x, y); });
-    xsimd::transform(inData, inData + NCols, outData,
-                     [=](const auto &x) { return xsimd::exp(x - maxVal); });
-    float totalVal = xsimd::reduce(outData, outData + NCols, 0.0f);
-    xsimd::transform(outData, outData + NCols, outData,
-                     [=](const auto &x) { return x / totalVal; });
+  for (int i = 0; i < NRows; i++) {
+    const auto inData = inData0 + i * NCols;
+    auto outData      = outData0 + i * NCols;
+    const float max   = *std::max_element(inData, inData + NCols);
+    float denominator(0);
+    for (int j = 0; j < NCols; j++) {
+      outData[j] = std::exp(inData[j] - max);
+      denominator += outData[j];
+    }
+    for (int j = 0; j < N; j++) {
+      outData[j] /= denominator;
+    }
   }
 }
+/// [row-softmax]
 
 static void BENCHMARK_NAME(CPP_Naive)(benchmark::State &state) {
 
-  aligned_vector<float> Q(SEQUENCE_LENGTH * DM, 1), K(SEQUENCE_LENGTH * DM, 1), V(SEQUENCE_LENGTH * DM, 1);
+  aligned_vector<float> Q(SEQUENCE_LENGTH * DM, 1), K(SEQUENCE_LENGTH * DM, 1),
+      V(SEQUENCE_LENGTH * DM, 1);
   aligned_vector<float> QK(SEQUENCE_LENGTH * SEQUENCE_LENGTH, -1), Output(SEQUENCE_LENGTH * DM, -1);
 
   for (auto _ : state) {
-
-    cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasTrans, /*M=*/SEQUENCE_LENGTH, /*N=*/SEQUENCE_LENGTH, /*K=*/SEQUENCE_LENGTH,
+    /// [scaled-dot-product]
+    cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasTrans, /*M=*/SEQUENCE_LENGTH,
+                /*N=*/SEQUENCE_LENGTH, /*K=*/SEQUENCE_LENGTH,
                 /*alpha=*/TEMPERATURE_INV, Q.data(), /*lda=*/SEQUENCE_LENGTH, K.data(), /*ldb=*/DM,
                 /*beta=*/0, QK.data(), /*ldc=*/DM);
 
@@ -34,14 +40,14 @@ static void BENCHMARK_NAME(CPP_Naive)(benchmark::State &state) {
                 /*K=*/SEQUENCE_LENGTH,
                 /*alpha=*/1, QK.data(), /*lda=*/SEQUENCE_LENGTH, V.data(), /*ldb=*/DM,
                 /*beta=*/0, Output.data(), /*ldc=*/DM);
+    /// [scaled-dot-product]
 
     benchmark::DoNotOptimize(QK.data());
     benchmark::DoNotOptimize(Output.data());
     benchmark::ClobberMemory();
   }
-  state.counters["Value"] = Output[0];  
-  state.counters["QK"] = QK[0];  
+  state.counters["Value"] = Output[0];
+  state.counters["QK"]    = QK[0];
 }
 
 ADD_BENCHMARK(BENCHMARK_NAME(CPP_Naive));
-

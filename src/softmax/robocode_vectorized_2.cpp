@@ -5,11 +5,11 @@
 /// [import-hat]
 
 static void BENCHMARK_NAME(Robocode_Vectorized_2)(benchmark::State& state) {
-/// [declare-input]
+/// [declare-io]
   aligned_vector<float> in(N, 1), out(N);
   const auto inData = in.data();
   auto outData      = out.data();
-/// [declare-input]
+/// [declare-io]
   for (auto _ : state) {
 /// [use-function]
     float denom = 0, maxVal = std::numeric_limits<float>::min();

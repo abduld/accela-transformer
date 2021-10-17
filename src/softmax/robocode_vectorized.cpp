@@ -1,16 +1,15 @@
 #include "config.hpp"
-#include "utils.hpp"
 
 /// [import-hat]
 #include "vectorized.hat"
 /// [import-hat]
 
 static void BENCHMARK_NAME(Robocode_Vectorized)(benchmark::State& state) {
-/// [declare-input]
+/// [declare-io]
   aligned_vector<float> in(N, 1), out(N);
   const auto inData = in.data();
   auto outData      = out.data();
-/// [declare-input]
+/// [declare-io]
   for (auto _ : state) {
 /// [use-function]
     vectorized(outData, inData);

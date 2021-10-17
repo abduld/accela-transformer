@@ -3,18 +3,22 @@
 ### [import-package]
 import math
 import robopy as acc
+
 ### [import-package]
 
 ### [use-fast-exp]
 from robopy._lang_python import fast_exp_mlas
+
 ### [use-fast-exp]
 
 ### [declare-input-length]
 N = 2 ** 20
 ### [declare-input-length]
 
+### [declare-target-depdendent-params]
 target = acc.Target(category=acc.Target.Category.CPU)
 vector_size = target.vector_bytes // 4
+### [declare-target-depdendent-params]
 
 ### [declare-input-output-arrays]
 Input = acc.Array(
@@ -36,12 +40,13 @@ MaxVal = acc.Array(
 
 ### [init]
 init_nest = acc.Nest(shape=(1,))
-z = init_nest.get_indices()
+
 
 @init_nest.iteration_logic
 def _():
     MaxVal[0] = -math.inf
     Denom[0] = 0.0
+
 
 init_schedule = init_nest.create_schedule()
 ### [init]
@@ -50,9 +55,11 @@ init_schedule = init_nest.create_schedule()
 max_nest = acc.Nest(shape=(N,))
 m = max_nest.get_indices()
 
+
 @max_nest.iteration_logic
 def _():
     MaxVal[0] = acc.max(MaxVal[0], Input[m])
+
 
 max_schedule = max_nest.create_schedule()
 ### [max]
@@ -61,9 +68,11 @@ max_schedule = max_nest.create_schedule()
 exp_nest = acc.Nest(shape=(N,))
 i = exp_nest.get_indices()
 
+
 @exp_nest.iteration_logic
 def _():
-    Output[i] = fast_exp_mlas(Input[i] - MaxVal[0]) 
+    Output[i] = fast_exp_mlas(Input[i] - MaxVal[0])
+
 
 exp_schedule = exp_nest.create_schedule()
 ### [exp]
@@ -72,9 +81,11 @@ exp_schedule = exp_nest.create_schedule()
 accum_nest = acc.Nest(shape=(N,))
 a = accum_nest.get_indices()
 
+
 @accum_nest.iteration_logic
 def _():
     Denom[0] += Output[a]
+
 
 accum_schedule = accum_nest.create_schedule()
 ### [accum]
@@ -83,9 +94,11 @@ accum_schedule = accum_nest.create_schedule()
 div_nest = acc.Nest(shape=(N,))
 j = div_nest.get_indices()
 
+
 @div_nest.iteration_logic
 def _():
     Output[j] /= Denom[0]
+
 
 div_schedule = div_nest.create_schedule()
 ### [divide]

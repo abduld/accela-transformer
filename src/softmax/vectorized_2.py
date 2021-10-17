@@ -64,7 +64,6 @@ def exp():
     exp_nest = acc.Nest(shape=(N,))
     i = exp_nest.get_indices()
 
-
     @exp_nest.iteration_logic
     def _():
         Output[i] = fast_exp_mlas(Input[i] - MaxVal[0])
@@ -136,6 +135,7 @@ exp()
 accum()
 div()
 ### [add-to-package]
+
 
 ### [export-package]
 package.build(

@@ -37,12 +37,16 @@
     <link
       rel="stylesheet"
       href="//unpkg.com/@fortawesome/fontawesome-free/css/solid.css"
-    /> 
-    <link rel="stylesheet" href="//unpkg.com/@markbattistella/docsify-charty@latest/dist/docsify-charty.min.css">
+    />
     <link
       rel="stylesheet"
-      href="_assets/style/prism-theme.css"
-    /> 
+      href="//unpkg.com/@markbattistella/docsify-charty@latest/dist/docsify-charty.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="//cdn.jsdelivr.net/npm/docsify-sidebar-collapse/dist/sidebar.min.css"
+    />
+    <link rel="stylesheet" href="_assets/style/prism-theme.css" />
     <style>
       :root {
         --copycode-background: rgba(0, 0, 0, 0.089)2);
@@ -50,7 +54,7 @@
         --code-block-padding: 0.75em 1.5em 0.5em 1.5em;
       }
       p[data-lang="ditaa"] {
-        text-align: center; 
+        text-align: center;
       }
       .docsify-copy-code-button {
         bottom: 0;
@@ -72,8 +76,12 @@
         executeScript: true,
         mergeNavbar: true,
         auto2top: true,
-        maxLevel: 10,
-        subMaxLevel: 10,
+        maxLevel: 1,
+        subMaxLevel: 1,
+        alias: {
+          "/.*/_sidebar.md": "/_sidebar.md",
+        },
+        sidebarDisplayLevel: 2, // set sidebar display level
         markdown: {
           smartypants: true,
           gfm: true,
@@ -115,7 +123,7 @@
           placeholder: "Search...",
         },
       };
-    </script> 
+    </script>
     <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
     <script src="//cdn.jsdelivr.net/npm/docsify-themeable@0"></script>
     <script src="//unpkg.com/docsify-copy-code@2"></script>
@@ -148,8 +156,10 @@
     <script src="//cdn.jsdelivr.net/npm/prismjs@1.25.0/components/prism-cpp.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/prismjs@1.25.0/components/prism-python.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/prismjs@1.25.0/components/prism-wasm.min.js"></script>
-    
+
     <!-- <script src="_assets/style/prism.js"></script> -->
+
+    <script src="//cdn.jsdelivr.net/npm/docsify-sidebar-collapse/dist/docsify-sidebar-collapse.min.js"></script>
 
     <script src="//cdn.jsdelivr.net/npm/pseudocode@latest/build/pseudocode.min.js"></script>
     <script src="//cdn.jsdelivr.net/gh/h-hg/docsify-pseudocode/dist/docsify-pseudocode.min.js"></script>

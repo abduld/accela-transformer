@@ -5,12 +5,12 @@ static void BENCHMARK_NAME(CPP_Naive_BatchFirst)(benchmark::State& state) {
                                                                                   1),
       out(BATCH_SIZE * N);
   for (auto _ : state) {
-    for (int ii = 0; ii < BATCH_SIZE; ii++) {
-      const auto inStart = in.begin() + ii * N;
-      const auto inEnd   = in.begin() + (ii + 1) * N;
-      const auto inData  = in.data() + ii * N;
-      auto outData       = out.data() + ii * N;
 /// [batch-first]
+    for (int i = 0; i < BATCH_SIZE; i++) {
+      const auto inStart = in.begin() + i * N;
+      const auto inEnd   = in.begin() + (i + 1) * N;
+      const auto inData  = in.data() + i * N;
+      auto outData       = out.data() + i * N;
       const float max    = *std::max_element(inStart, inEnd);
       float denominator(0);
       for (int j = 0; j < N; j++) {
@@ -20,8 +20,8 @@ static void BENCHMARK_NAME(CPP_Naive_BatchFirst)(benchmark::State& state) {
       for (int j = 0; j < N; j++) {
         outData[j] /= denominator;
       }
-/// [batch-first]
     }
+/// [batch-first]
     benchmark::DoNotOptimize(out.data());
     benchmark::ClobberMemory();
   }
@@ -42,25 +42,25 @@ static void BENCHMARK_NAME(CPP_Naive_LengthFirst)(benchmark::State& state) {
         denominator(BATCH_SIZE, 0);
 /// [length-first]
     for (int jj = 0; jj < N; jj++) {
-      for (int ii = 0; ii < BATCH_SIZE; ii++) {
-        const auto inData = in.data() + ii * N;
-        maxElements[ii]   = std::max(maxElements[ii], inData[jj]);
+      for (int i = 0; i < BATCH_SIZE; i++) {
+        const auto inData = in.data() + i * N;
+        maxElements[i]   = std::max(maxElements[i], inData[jj]);
       }
     }
 
     for (int jj = 0; jj < N; jj++) {
-      for (int ii = 0; ii < BATCH_SIZE; ii++) {
-        const auto inData = in.data() + ii * N;
-        auto outData      = out.data() + ii * N;
-        outData[jj]       = std::exp(inData[jj] - maxElements[ii]);
-        denominator[ii] += outData[jj];
+      for (int i = 0; i < BATCH_SIZE; i++) {
+        const auto inData = in.data() + i * N;
+        auto outData      = out.data() + i * N;
+        outData[jj]       = std::exp(inData[jj] - maxElements[i]);
+        denominator[i] += outData[jj];
       }
     }
 
     for (int jj = 0; jj < N; jj++) {
-      for (int ii = 0; ii < BATCH_SIZE; ii++) {
-        auto outData = out.data() + ii * N;
-        outData[jj] /= denominator[ii];
+      for (int i = 0; i < BATCH_SIZE; i++) {
+        auto outData = out.data() + i * N;
+        outData[jj] /= denominator[i];
       }
     }
 /// [length-first]
@@ -86,24 +86,24 @@ static void BENCHMARK_NAME(CPP_Naive_Mixed)(benchmark::State& state) {
         denominator(BATCH_SIZE, 0);
 /// [mixed]
     for (int jj = 0; jj < N; jj++) {
-      for (int ii = 0; ii < BATCH_SIZE; ii++) {
-        const auto inData = in.data() + ii * N;
-        maxElements[ii]   = std::max(maxElements[ii], inData[jj]);
+      for (int i = 0; i < BATCH_SIZE; i++) {
+        const auto inData = in.data() + i * N;
+        maxElements[i]   = std::max(maxElements[i], inData[jj]);
       }
     }
 
     for (int jj = 0; jj < N; jj++) {
-      for (int ii = 0; ii < BATCH_SIZE; ii++) {
-        const auto inData = in.data() + ii * N;
-        auto outData      = out.data() + ii * N;
-        outData[jj]       = std::exp(inData[jj] - maxElements[ii]);
-        denominator[ii] += outData[jj];
+      for (int i = 0; i < BATCH_SIZE; i++) {
+        const auto inData = in.data() + i * N;
+        auto outData      = out.data() + i * N;
+        outData[jj]       = std::exp(inData[jj] - maxElements[i]);
+        denominator[i] += outData[jj];
       }
     }
 
-    for (int ii = 0; ii < BATCH_SIZE; ii++) {
-      auto outData     = out.data() + ii * N;
-      const auto denom = denominator[ii];
+    for (int i = 0; i < BATCH_SIZE; i++) {
+      auto outData     = out.data() + i * N;
+      const auto denom = denominator[i];
       for (int jj = 0; jj < N; jj++) {
         outData[jj] /= denom;
       }
