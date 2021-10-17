@@ -1,4 +1,4 @@
-# Vectorized C++ Implementation Using XSIMD
+# Vectorized C++ Using XSIMD
 
 We implement a vectorized reductions in C++ by leveraging the [XSIMD](https://github.com/xtensor-stack/xsimd) library.
 

@@ -1,4 +1,4 @@
-# Naive Accera Implementation
+# Naive Accera
 
 The pseudocode of the naive implementation is:
 

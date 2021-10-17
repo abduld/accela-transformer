@@ -1,4 +1,4 @@
-# Vectorized Accera Implementation
+# Vectorized Accera
 
 The following shows how to implement tree reduction using Accera.
 There are only a few tweaks that we need to make to the [naive](src/reduction/naive.md) Accera implementation to enable vectorization. 

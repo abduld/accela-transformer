@@ -15,12 +15,19 @@ static void BENCHMARK_NAME(CPP_XSIMD)(benchmark::State &state) {
       reinterpret_cast<float *>(__builtin_assume_aligned(out.data(), XSIMD_DEFAULT_ALIGNMENT));
 
   for (auto _ : state) {
+/// [max-val]
     float maxVal = xsimd::reduce(inData, inData + N, inData[0],
                                  [=](const auto &x, const auto &y) { return xsimd::max(x, y); });
+                                 
+/// [max-val]
+/// [sum-exp]
     xsimd::transform(inData, inData + N, outData,
                      [=](const auto &x) { return xsimd::exp(x - maxVal); });
     float totalVal = xsimd::reduce(outData, outData + N, 0.0f);
+/// [sum-exp]
+/// [divide]
     xsimd::transform(outData, outData + N, outData, [=](const auto &x) { return x / totalVal; });
+/// [divide]
     benchmark::DoNotOptimize(outData);
     benchmark::ClobberMemory();
   }

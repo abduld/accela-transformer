@@ -1,4 +1,4 @@
-# Naive C++ Implementation
+# Naive C++
 
 We implement two versions of reductions in pure C++.
 The first (`CPP_Naive`) uses a simple loop to perform the accumulation:

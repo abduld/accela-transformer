@@ -4,7 +4,6 @@ import math
 import robopy as acc
 
 N = 2 ** 20
-DEV_MODE = False
 
 Input = acc.Array(
     role=acc.Array.Role.INPUT, element_type=acc.ScalarType.float32, shape=(N,)
@@ -90,5 +89,5 @@ package.add_function(fused_plan, args=(Output, Input), base_name="naive")
 package.build(
     name="naive",
     format=acc.Package.Format.HAT,
-    mode=acc.Package.Mode.DEBUG if DEV_MODE else acc.Package.Mode.RELEASE,
+    mode=acc.Package.Mode.RELEASE,
 )
