@@ -39,7 +39,6 @@ MaxVal = acc.Array(
 
 ### [max]
 def max():
-
     max_nest = acc.Nest(shape=(N,))
     m = max_nest.get_indices()
 
@@ -106,7 +105,7 @@ def accum():
     package.add_function(
         accum_plan, args=(Denom, Output), base_name="vectorized_2_accum"
     )
-### [exp]
+### [accum]
 
 
 ### [div]

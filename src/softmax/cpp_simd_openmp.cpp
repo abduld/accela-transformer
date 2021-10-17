@@ -14,6 +14,7 @@ static void BENCHMARK_NAME(CPP_SIMD_OpenMP)(benchmark::State &state) {
       maxVal = std::max(maxVal, inData[idx]);
     }
 /// [max-val]
+
 /// [sum-exp]
     float sum = 0;
 #pragma omp simd reduction(+ : sum) aligned(inData, outData : XSIMD_DEFAULT_ALIGNMENT)
@@ -22,6 +23,7 @@ static void BENCHMARK_NAME(CPP_SIMD_OpenMP)(benchmark::State &state) {
       sum += outData[idx];
     }
 /// [sum-exp]
+
 /// [divide]
 #pragma omp simd aligned(outData : XSIMD_DEFAULT_ALIGNMENT)
     for (int idx = 0; idx < N; idx++) {
