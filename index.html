@@ -42,10 +42,6 @@
       rel="stylesheet"
       href="//unpkg.com/@markbattistella/docsify-charty@latest/dist/docsify-charty.min.css"
     />
-    <link
-      rel="stylesheet"
-      href="//cdn.jsdelivr.net/npm/docsify-sidebar-collapse/dist/sidebar.min.css"
-    />
     <link rel="stylesheet" href="_assets/style/prism-theme.css" />
     <style>
       :root {
@@ -77,11 +73,10 @@
         mergeNavbar: true,
         auto2top: true,
         maxLevel: 1,
-        subMaxLevel: 1,
+        subMaxLevel: 2,
         alias: {
           "/.*/_sidebar.md": "/_sidebar.md",
         },
-        sidebarDisplayLevel: 2, // set sidebar display level
         markdown: {
           smartypants: true,
           gfm: true,
@@ -158,8 +153,6 @@
     <script src="//cdn.jsdelivr.net/npm/prismjs@1.25.0/components/prism-wasm.min.js"></script>
 
     <!-- <script src="_assets/style/prism.js"></script> -->
-
-    <script src="//cdn.jsdelivr.net/npm/docsify-sidebar-collapse/dist/docsify-sidebar-collapse.min.js"></script>
 
     <script src="//cdn.jsdelivr.net/npm/pseudocode@latest/build/pseudocode.min.js"></script>
     <script src="//cdn.jsdelivr.net/gh/h-hg/docsify-pseudocode/dist/docsify-pseudocode.min.js"></script>
