@@ -7,7 +7,7 @@
 static constexpr int VectorSize = 8;
 static constexpr int SplitSize = 4 * VectorSize;
 
-static void BENCHMARK_NAME(Robocode_Parallized)(benchmark::State& state) {
+static void BENCHMARK_NAME(Accera_Parallized)(benchmark::State& state) {
   aligned_vector<float> Input(N, 1.0/N);
   float output = 0;
   for (auto _ : state) {
@@ -23,4 +23,4 @@ static void BENCHMARK_NAME(Robocode_Parallized)(benchmark::State& state) {
   state.counters["Value"] = output; // Expected to be 1 
 }
 
-ADD_BENCHMARK(BENCHMARK_NAME(Robocode_Parallized));
+ADD_BENCHMARK(BENCHMARK_NAME(Accera_Parallized));

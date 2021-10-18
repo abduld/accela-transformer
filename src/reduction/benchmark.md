@@ -8,8 +8,8 @@
  
 Benchmark Name                        | Time (us)
 --------------------------------------|-----------
-[Robocode_Naive](naive.md)            | 970.427
-[Robocode_Vectorized](vectorized.md)  | **79.934**
+[Accera_Naive](naive.md)            | 970.427
+[Accera_Vectorized](vectorized.md)  | **79.934**
 [CPP_Naive](cpp_naive.md)             | 1242.72
 [CPP_Naive_Algorithm](cpp_naive.md)   | 1242.29
 [CPP_SIMD_OpenMP](cpp_simd_openmp.md) | 116.873

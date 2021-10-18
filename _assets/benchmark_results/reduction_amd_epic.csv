@@ -1,6 +1,6 @@
 name,iterations,real_time,cpu_time,time_unit,bytes_per_second,items_per_second,label,error_occurred,error_message,"Value"
-"reduction_Robocode_Vectorized",8706,79.934,79.9343,us,5.24719e+10,1.3118e+10,,,,1
-"reduction_Robocode_Naive",724,970.427,970.429,us,4.32211e+09,1.08053e+09,,,,1
+"reduction_Accera_Vectorized",8706,79.934,79.9343,us,5.24719e+10,1.3118e+10,,,,1
+"reduction_Accera_Naive",724,970.427,970.429,us,4.32211e+09,1.08053e+09,,,,1
 "reduction_CPP_XSIMD",5975,117.362,117.363,us,3.57378e+10,8.93444e+09,,,,1
 "reduction_CPP_SIMD_OpenMP",5966,116.873,116.848,us,3.58954e+10,8.97385e+09,,,,1
 "reduction_CPP_Naive",561,1242.72,1242.62,us,3.37537e+09,8.43843e+08,,,,1

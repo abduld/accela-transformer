@@ -4,7 +4,7 @@
 
 #include "naive.hat"
 
-static void BENCHMARK_NAME(Robocode_Naive)(benchmark::State& state) {
+static void BENCHMARK_NAME(Accera_Naive)(benchmark::State& state) {
   aligned_vector<float> in(BATCH_SIZE * N,
                                                                                   1),
       out(BATCH_SIZE * N);
@@ -21,4 +21,4 @@ static void BENCHMARK_NAME(Robocode_Naive)(benchmark::State& state) {
   state.counters["Value"] = N * out[0]; // Expected to be 1
 }
 
-ADD_BENCHMARK(BENCHMARK_NAME(Robocode_Naive));
+ADD_BENCHMARK(BENCHMARK_NAME(Accera_Naive));

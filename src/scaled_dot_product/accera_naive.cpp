@@ -2,7 +2,7 @@
 
 #include "naive.hat"
 
-static void BENCHMARK_NAME(Robocode_Naive_SEQ)(benchmark::State& state) {
+static void BENCHMARK_NAME(Accera_Naive_SEQ)(benchmark::State& state) {
 
   aligned_vector<float> Q(SEQUENCE_LENGTH * DM, 1), K(SEQUENCE_LENGTH * DM, 1),
       V(SEQUENCE_LENGTH * DM, 1);
@@ -22,10 +22,10 @@ static void BENCHMARK_NAME(Robocode_Naive_SEQ)(benchmark::State& state) {
   state.counters["QK"] = QK[0];  
 }
 
-ADD_BENCHMARK(BENCHMARK_NAME(Robocode_Naive_SEQ));
+ADD_BENCHMARK(BENCHMARK_NAME(Accera_Naive_SEQ));
 
 
-static void BENCHMARK_NAME(Robocode_Naive)(benchmark::State& state) {
+static void BENCHMARK_NAME(Accera_Naive)(benchmark::State& state) {
 
   aligned_vector<float> Q(SEQUENCE_LENGTH * DM, 1), K(SEQUENCE_LENGTH * DM, 1),
       V(SEQUENCE_LENGTH * DM, 1);
@@ -43,4 +43,4 @@ static void BENCHMARK_NAME(Robocode_Naive)(benchmark::State& state) {
   state.counters["QK"] = QK[0];  
 }
 
-ADD_BENCHMARK(BENCHMARK_NAME(Robocode_Naive));
+ADD_BENCHMARK(BENCHMARK_NAME(Accera_Naive));
