@@ -1,9 +1,12 @@
 ---
+benchmark_name: CPP_XSIMD
 cpp_code: src/scaled_dot_product/cpp_simd_xsimd.cpp
 ---
 # Vectorized C++ Using XSIMD
-<!-- 
-[:fas fa-code:](src/scaled_dot_product/cpp_simd_xsimd.cpp) -->
+
+> [!Note]
+> The following shows the implementation of the `{{benchmark_name}}` baseline.
+> The full source code listing is found in [{{cpp_code}} :fas fa-code: ]({{cpp_code}}). 
 
 We implement a vectorized scaled dot product in C++ by leveraging the [XSIMD](https://github.com/xtensor-stack/xsimd) library.
 
