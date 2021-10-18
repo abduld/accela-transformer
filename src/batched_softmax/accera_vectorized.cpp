@@ -5,21 +5,18 @@
 /// [import-hat]
 
 static void BENCHMARK_NAME(Accera_Vectorized)(benchmark::State& state) {
-/// [declare-io]
-  aligned_vector<float> in(BATCH_SIZE * N,
-                                                                                  1),
-      out(BATCH_SIZE * N);
+  /// [declare-io]
+  aligned_vector<float> in(BATCH_SIZE * N, 1), out(BATCH_SIZE * N);
   const auto inData = in.data();
   auto outData      = out.data();
-/// [declare-io]
+  /// [declare-io]
   for (auto _ : state) {
-/// [use-function]
-    aligned_vector<float> maxElements(
-        BATCH_SIZE, std::numeric_limits<float>::min()),
+    /// [use-function]
+    aligned_vector<float> maxElements(BATCH_SIZE, std::numeric_limits<float>::min()),
         denominator(BATCH_SIZE, 0);
-    auto maxData = maxElements.data(), denomData = denominator.data(); 
-    vectorized(outData, inData, maxData, denomData); 
-/// [use-function]
+    auto maxData = maxElements.data(), denomData = denominator.data();
+    vectorized(outData, inData, maxData, denomData);
+    /// [use-function]
     benchmark::DoNotOptimize(outData);
     benchmark::DoNotOptimize(maxData);
     benchmark::DoNotOptimize(denomData);

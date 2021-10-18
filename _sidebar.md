@@ -26,8 +26,7 @@
 * 
 * [Scaled Dot Product](/src/scaled_dot_product/_index.md)
   * [Accera Naive](/src/scaled_dot_product/naive.md)
-  * [Accera Vectorized](src/scaled_dot_product/vectorized.md)
-  * [Accera Vectorized 2](src/scaled_dot_product/vectorized_2.md)
+  * [Accera Fused](src/scaled_dot_product/fused.md) 
   * [CPP Naive](src/scaled_dot_product/cpp_naive.md)
   * [CPP SIMD OpenMP](src/scaled_dot_product/cpp_simd_openmp.md)
   * [CPP SIMD XSIMD](src/scaled_dot_product/cpp_simd_xsimd.md)

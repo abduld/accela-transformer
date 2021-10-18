@@ -106,13 +106,21 @@ Since Input is a $1$-dimensional vector, we need to map the $2$-dimensional indi
 
 [](vectorized.py ':include :type=code python :fragment=declare-vector-reduction-iteration-logic')
 
-The above is equivalent to the following Python loop:
+The above is equivalent to the following pseudocode:
 
-```python
-for i in range(N // split_size):
-    for j in range(split_size):
-        SumVec[j] += Input[i * split_size + j]
+
+```algorithm
+\begin{algorithm} 
+\begin{algorithmic}  
+\FOR{$i$ = 0 \TO $\frac{N}{\texttt{split\_size}}$}  
+    \FOR{$j$ = 0 \TO $\texttt{split\_size}$} 
+        \STATE sumVec[j] += Input[$i$ * \texttt{split\_size} + $j$]
+    \ENDFOR
+\ENDFOR 
+\end{algorithmic}
+\end{algorithm}
 ```
+ 
 
 We also define the final reduction nest.
 This nest adds the elements of `SumVec` together.
@@ -127,15 +135,25 @@ We then perform concatenation fusing (i.e., fusing with `partial=0`).
 
 [](vectorized.py ':include :type=code python :fragment=fuse-two-schedules')
 
-The above would effectively concatenate the two loops generating the following equivalent Python code:
+The above would effectively concatenate the two loops generating the following equivalent pseudocode code:
 
-```python
-for i in range(N // split_size):
-    for j in range(split_size):
-        SumVec[j] += Input[i * split_size + j]
-for k in range(split_size):
-    Sum[0] += SumVec[k]
+
+```algorithm
+\begin{algorithm} 
+\begin{algorithmic}  
+\FOR{$i$ = 0 \TO $\frac{N}{\texttt{split\_size}}$}  
+    \FOR{$j$ = 0 \TO $\texttt{split\_size}$} 
+        \STATE sumVec[j] += Input[$i$ * \texttt{split\_size} + $j$]
+    \ENDFOR
+\ENDFOR 
+\FOR{$k$ = 0 \TO $\texttt{split\_size}$} 
+    \STATE Sum[0] += sumVec[$k$]
+\ENDFOR 
+\end{algorithmic}
+\end{algorithm}
 ```
+ 
+ 
 
 Querying for the indices of the fused schedule returns:
 

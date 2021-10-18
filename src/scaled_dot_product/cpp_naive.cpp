@@ -23,9 +23,13 @@ static void row_softmax(float *outData0, const float *inData0) {
 
 static void BENCHMARK_NAME(CPP_Naive)(benchmark::State &state) {
 
-  aligned_vector<float> Q(SEQUENCE_LENGTH * DM, 1), K(SEQUENCE_LENGTH * DM, 1),
-      V(SEQUENCE_LENGTH * DM, 1);
-  aligned_vector<float> QK(SEQUENCE_LENGTH * SEQUENCE_LENGTH, -1), Output(SEQUENCE_LENGTH * DM, -1);
+  /// [declare-io]
+  aligned_vector<float> Q(SEQUENCE_LENGTH * DM, 1);
+  aligned_vector<float> K(SEQUENCE_LENGTH * DM, 1);
+  aligned_vector<float> V(SEQUENCE_LENGTH * DM, 1);
+  aligned_vector<float> QK(SEQUENCE_LENGTH * SEQUENCE_LENGTH, -1);
+  aligned_vector<float> Output(SEQUENCE_LENGTH * DM, -1);
+  /// [declare-io]
 
   for (auto _ : state) {
     /// [scaled-dot-product]
