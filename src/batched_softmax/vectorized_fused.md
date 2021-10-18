@@ -1,4 +1,42 @@
-# Vectorized Accera
+---
+benchmark_name: Accera_Naive
+cpp_code: src/batched_softmax/accera_vectorized_fused.cpp
+accera_code: src/batched_softmax/vectorized_fused.py
+---
+# Naive Accera
+
+> [!Note]
+> The following shows the implementation of the `{{benchmark_name}}`.
+> The full source code listing of the Accera code generator can be found in  [{{accera_code}} :fas fa-code: ]({{accera_code}}) and the benchmark runner is found in [{{cpp_code}} :fas fa-code: ]({{cpp_code}}).
+ 
+
+The pseudocode of the naive implementation is:
+
+```algorithm
+\begin{algorithm} 
+\begin{algorithmic} 
+\PROCEDURE{BatchedSoftmax}{$Input$}
+    \STATE maxVal = -$\infty$
+    \STATE denom = $0$
+    \FOR{$b$ = 0 \TO \texttt{BATCH\_SIZE}} 
+        \FOR{$m$ = 0 \TO \texttt{N}} 
+            \STATE maxVal = $max$(maxVal[b], Input[bm, m])
+        \ENDFOR 
+        \FOR{$i$ = 0 \TO \texttt{N}} 
+            \STATE Output[b, i] = $e^{\text{Input[b, i]} - \text{maxVal}}$
+        \ENDFOR 
+        \FOR{$a$ = 0 \TO \texttt{N}} 
+            \STATE demon = denom + Output[b, a]
+        \ENDFOR 
+        \FOR{$j$ = 0 \TO \texttt{N}} 
+            \STATE Output[b,j] = $\frac{\text{Output[b,j]}}{\text{denom}}$ 
+        \ENDFOR 
+    \ENDFOR  
+    \RETURN Output
+\ENDPROCEDURE
+\end{algorithmic}
+\end{algorithm}
+```
 
 [vectorized_fused.py](vectorized_fused.py ':include :type=code python :fragment=import-package')
 

@@ -6,7 +6,7 @@ accera_code: src/batched_softmax/naive.py
 # Naive Accera
 
 > [!Note]
-> The following shows the implementation of the `{{benchmark_names}}`.
+> The following shows the implementation of the `{{benchmark_name}}`.
 > The full source code listing of the Accera code generator can be found in  [{{accera_code}} :fas fa-code: ]({{accera_code}}) and the benchmark runner is found in [{{cpp_code}} :fas fa-code: ]({{cpp_code}}).
  
 
@@ -30,7 +30,7 @@ The pseudocode of the naive implementation is:
     \ENDFOR 
     \FOR{$ba$ = 0 \TO \texttt{BATCH\_SIZE}} 
         \FOR{$a$ = 0 \TO \texttt{N}} 
-            \STATE demon[ba] = denom[ba] + Input[ba, a]
+            \STATE demon[ba] = denom[ba] + Output[ba, a]
         \ENDFOR 
     \ENDFOR 
     \FOR{$bj$ = 0 \TO \texttt{BATCH\_SIZE}} 
