@@ -140,7 +140,7 @@ for k in range(split_size):
 Querying for the indices of the fused schedule returns:
 
  - The fused dimension `f` 
- - The indices of the `vec_accum_schedul` (`i,j`)
+ - The indices of the `vec_accum_schedule` (`i,j`)
  - The index of `finalize_accum_schedule` (`k`)
 
 
