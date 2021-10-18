@@ -7,15 +7,16 @@ static void BENCHMARK_NAME(CPP_XSIMD)(benchmark::State &state) {
   using simd_t = xsimd::simd_type<float>;
   aligned_vector<float> in(N, 1), out(N);
 
-  float *inData =
-      reinterpret_cast<float *>(__builtin_assume_aligned(in.data(), XSIMD_DEFAULT_ALIGNMENT));
-  float *outData =
-      reinterpret_cast<float *>(__builtin_assume_aligned(out.data(), XSIMD_DEFAULT_ALIGNMENT));
+  float *inData = reinterpret_cast<float *>(
+      __builtin_assume_aligned(in.data(), XSIMD_DEFAULT_ALIGNMENT));
+  float *outData = reinterpret_cast<float *>(
+      __builtin_assume_aligned(out.data(), XSIMD_DEFAULT_ALIGNMENT));
 
   for (auto _ : state) {
     /// [max-val]
-    float maxVal = xsimd::reduce(inData, inData + N, inData[0],
-                                 [=](const auto &x, const auto &y) { return xsimd::max(x, y); });
+    float maxVal =
+        xsimd::reduce(inData, inData + N, inData[0],
+                      [=](const auto &x, const auto &y) { return xsimd::max(x, y); });
 
     /// [max-val]
     /// [sum-exp]
@@ -24,7 +25,8 @@ static void BENCHMARK_NAME(CPP_XSIMD)(benchmark::State &state) {
     float totalVal = xsimd::reduce(outData, outData + N, 0.0f);
     /// [sum-exp]
     /// [divide]
-    xsimd::transform(outData, outData + N, outData, [=](const auto &x) { return x / totalVal; });
+    xsimd::transform(outData, outData + N, outData,
+                     [=](const auto &x) { return x / totalVal; });
     /// [divide]
     benchmark::DoNotOptimize(outData);
     benchmark::ClobberMemory();

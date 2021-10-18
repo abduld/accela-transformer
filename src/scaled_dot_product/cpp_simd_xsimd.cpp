@@ -8,8 +8,9 @@ static void row_softmax(float *outData0, const float *inData0) {
   for (int i = 0; i < NRows; i++) {
     const auto inData = inData0 + i * NCols;
     auto outData      = outData0 + i * NCols;
-    float maxVal      = xsimd::reduce(inData, inData + NCols, inData[0],
-                                 [=](const auto &x, const auto &y) { return xsimd::max(x, y); });
+    float maxVal =
+        xsimd::reduce(inData, inData + NCols, inData[0],
+                      [=](const auto &x, const auto &y) { return xsimd::max(x, y); });
     xsimd::transform(inData, inData + NCols, outData,
                      [=](const auto &x) { return xsimd::exp(x - maxVal); });
     float totalVal = xsimd::reduce(outData, outData + NCols, 0.0f);
@@ -33,14 +34,17 @@ static void BENCHMARK_NAME(CPP_XSIMD)(benchmark::State &state) {
     /// [scaled-dot-product]
     cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasTrans, /*M=*/SEQUENCE_LENGTH,
                 /*N=*/SEQUENCE_LENGTH, /*K=*/SEQUENCE_LENGTH,
-                /*alpha=*/TEMPERATURE_INV, Q.data(), /*lda=*/SEQUENCE_LENGTH, K.data(), /*ldb=*/DM,
+                /*alpha=*/TEMPERATURE_INV, Q.data(), /*lda=*/SEQUENCE_LENGTH, K.data(),
+                /*ldb=*/DM,
                 /*beta=*/0, QK.data(), /*ldc=*/DM);
 
     row_softmax<SEQUENCE_LENGTH, SEQUENCE_LENGTH>(QK.data(), QK.data());
 
-    cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, /*M=*/SEQUENCE_LENGTH, /*N=*/DM,
+    cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans,
+                /*M=*/SEQUENCE_LENGTH, /*N=*/DM,
                 /*K=*/SEQUENCE_LENGTH,
-                /*alpha=*/1, QK.data(), /*lda=*/SEQUENCE_LENGTH, V.data(), /*ldb=*/DM,
+                /*alpha=*/1, QK.data(), /*lda=*/SEQUENCE_LENGTH, V.data(),
+                /*ldb=*/DM,
                 /*beta=*/0, Output.data(), /*ldc=*/DM);
     /// [scaled-dot-product]
 

@@ -5,10 +5,10 @@ static void BENCHMARK_NAME(CPP_Naive_Memcpy)(benchmark::State& state) {
   aligned_vector<float> Input(N, 1.0 / N), Output(N, 0);
   float output = 0;
   for (auto _ : state) {
-    float* inData =
-        reinterpret_cast<float*>(__builtin_assume_aligned(Input.data(), XSIMD_DEFAULT_ALIGNMENT));
-    float* outData =
-        reinterpret_cast<float*>(__builtin_assume_aligned(Output.data(), XSIMD_DEFAULT_ALIGNMENT));
+    float* inData = reinterpret_cast<float*>(
+        __builtin_assume_aligned(Input.data(), XSIMD_DEFAULT_ALIGNMENT));
+    float* outData = reinterpret_cast<float*>(
+        __builtin_assume_aligned(Output.data(), XSIMD_DEFAULT_ALIGNMENT));
 
     for (int ii = 0; ii < N; ii++) {
       outData[ii] = inData[ii];
@@ -28,10 +28,10 @@ ADD_BENCHMARK(BENCHMARK_NAME(CPP_Naive_Memcpy));
 static void BENCHMARK_NAME(CPP_Naive_Memcpy_2)(benchmark::State& state) {
   aligned_vector<float> Input(N, 1.0 / N), Output(N, 0);
   for (auto _ : state) {
-    float* inData =
-        reinterpret_cast<float*>(__builtin_assume_aligned(Input.data(), XSIMD_DEFAULT_ALIGNMENT));
-    float* outData =
-        reinterpret_cast<float*>(__builtin_assume_aligned(Output.data(), XSIMD_DEFAULT_ALIGNMENT));
+    float* inData = reinterpret_cast<float*>(
+        __builtin_assume_aligned(Input.data(), XSIMD_DEFAULT_ALIGNMENT));
+    float* outData = reinterpret_cast<float*>(
+        __builtin_assume_aligned(Output.data(), XSIMD_DEFAULT_ALIGNMENT));
 
     for (int ii = 0; ii < N; ii++) {
       *outData++ = *inData++;
@@ -51,10 +51,10 @@ ADD_BENCHMARK(BENCHMARK_NAME(CPP_Naive_Memcpy_2));
 static void BENCHMARK_NAME(CPP_Memcpy)(benchmark::State& state) {
   aligned_vector<float> Input(N, 1.0 / N), Output(N, 0);
   for (auto _ : state) {
-    float* inData =
-        reinterpret_cast<float*>(__builtin_assume_aligned(Input.data(), XSIMD_DEFAULT_ALIGNMENT));
-    float* outData =
-        reinterpret_cast<float*>(__builtin_assume_aligned(Output.data(), XSIMD_DEFAULT_ALIGNMENT));
+    float* inData = reinterpret_cast<float*>(
+        __builtin_assume_aligned(Input.data(), XSIMD_DEFAULT_ALIGNMENT));
+    float* outData = reinterpret_cast<float*>(
+        __builtin_assume_aligned(Output.data(), XSIMD_DEFAULT_ALIGNMENT));
 
     std::memcpy(outData, inData, sizeof(float) * N);
     benchmark::DoNotOptimize(Input.data());
@@ -75,10 +75,10 @@ static void BENCHMARK_NAME(CPP_Memcpy_XSIMD)(benchmark::State& state) {
 
   aligned_vector<float> Input(N, 1.0 / N), Output(N, 0);
   for (auto _ : state) {
-    float* inData =
-        reinterpret_cast<float*>(__builtin_assume_aligned(Input.data(), XSIMD_DEFAULT_ALIGNMENT));
-    float* outData =
-        reinterpret_cast<float*>(__builtin_assume_aligned(Output.data(), XSIMD_DEFAULT_ALIGNMENT));
+    float* inData = reinterpret_cast<float*>(
+        __builtin_assume_aligned(Input.data(), XSIMD_DEFAULT_ALIGNMENT));
+    float* outData = reinterpret_cast<float*>(
+        __builtin_assume_aligned(Output.data(), XSIMD_DEFAULT_ALIGNMENT));
     for (int ii = 0; ii < N; ii += inc) {
       xsimd::store_aligned(&outData[ii], xsimd::load_aligned(&inData[ii]));
     }
@@ -99,10 +99,10 @@ static void BENCHMARK_NAME(CPP_Memcpy_XSIMD_2)(benchmark::State& state) {
 
   aligned_vector<float> Input(N, 1.0 / N), Output(N, 0);
   for (auto _ : state) {
-    float* inData =
-        reinterpret_cast<float*>(__builtin_assume_aligned(Input.data(), XSIMD_DEFAULT_ALIGNMENT));
-    float* outData =
-        reinterpret_cast<float*>(__builtin_assume_aligned(Output.data(), XSIMD_DEFAULT_ALIGNMENT));
+    float* inData = reinterpret_cast<float*>(
+        __builtin_assume_aligned(Input.data(), XSIMD_DEFAULT_ALIGNMENT));
+    float* outData = reinterpret_cast<float*>(
+        __builtin_assume_aligned(Output.data(), XSIMD_DEFAULT_ALIGNMENT));
     for (int ii = 0; ii < N; ii += 4 * inc) {
 #pragma unroll
       for (int jj = ii; jj < ii + 4 * inc; jj += inc) {
@@ -125,12 +125,10 @@ ADD_BENCHMARK(BENCHMARK_NAME(CPP_Memcpy_XSIMD_2));
 static void BENCHMARK_NAME(CPP_Memcpy_Intrinsic)(benchmark::State& state) {
   aligned_vector<float> Input(N, 1.0 / N), Output(N, 0);
   for (auto _ : state) {
-    float* inData =
-        reinterpret_cast<float*>(__builtin_assume_aligned(Input.data(),
-        XSIMD_DEFAULT_ALIGNMENT));
-    float* outData =
-        reinterpret_cast<float*>(__builtin_assume_aligned(Output.data(),
-        XSIMD_DEFAULT_ALIGNMENT));
+    float* inData = reinterpret_cast<float*>(
+        __builtin_assume_aligned(Input.data(), XSIMD_DEFAULT_ALIGNMENT));
+    float* outData = reinterpret_cast<float*>(
+        __builtin_assume_aligned(Output.data(), XSIMD_DEFAULT_ALIGNMENT));
 
     __builtin_memcpy(outData, inData, sizeof(float) * N);
     benchmark::DoNotOptimize(Input.data());

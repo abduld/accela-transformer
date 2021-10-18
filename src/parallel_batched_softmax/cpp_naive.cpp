@@ -1,11 +1,9 @@
 #include "config.hpp"
 
 static void BENCHMARK_NAME(CPP_Naive_BatchFirst)(benchmark::State& state) {
-  aligned_vector<float> in(BATCH_SIZE * N,
-                                                                                  1),
-      out(BATCH_SIZE * N);
+  aligned_vector<float> in(BATCH_SIZE * N, 1), out(BATCH_SIZE * N);
   for (auto _ : state) {
-    #pragma omp parallel for 
+#pragma omp parallel for
     for (int ii = 0; ii < BATCH_SIZE; ii++) {
       const auto inStart = in.begin() + ii * N;
       const auto inEnd   = in.begin() + (ii + 1) * N;

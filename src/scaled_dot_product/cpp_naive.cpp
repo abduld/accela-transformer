@@ -35,14 +35,17 @@ static void BENCHMARK_NAME(CPP_Naive)(benchmark::State &state) {
     /// [scaled-dot-product]
     cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasTrans, /*M=*/SEQUENCE_LENGTH,
                 /*N=*/SEQUENCE_LENGTH, /*K=*/SEQUENCE_LENGTH,
-                /*alpha=*/TEMPERATURE_INV, Q.data(), /*lda=*/SEQUENCE_LENGTH, K.data(), /*ldb=*/DM,
+                /*alpha=*/TEMPERATURE_INV, Q.data(), /*lda=*/SEQUENCE_LENGTH, K.data(),
+                /*ldb=*/DM,
                 /*beta=*/0, QK.data(), /*ldc=*/DM);
 
     row_softmax<SEQUENCE_LENGTH, SEQUENCE_LENGTH>(QK.data(), QK.data());
 
-    cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, /*M=*/SEQUENCE_LENGTH, /*N=*/DM,
+    cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans,
+                /*M=*/SEQUENCE_LENGTH, /*N=*/DM,
                 /*K=*/SEQUENCE_LENGTH,
-                /*alpha=*/1, QK.data(), /*lda=*/SEQUENCE_LENGTH, V.data(), /*ldb=*/DM,
+                /*alpha=*/1, QK.data(), /*lda=*/SEQUENCE_LENGTH, V.data(),
+                /*ldb=*/DM,
                 /*beta=*/0, Output.data(), /*ldc=*/DM);
     /// [scaled-dot-product]
 

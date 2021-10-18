@@ -10,16 +10,16 @@ static void BENCHMARK_NAME(CPP_XTensor)(benchmark::State &state) {
   auto inTensor = xt::adapt(in, {N}), outTensor = xt::adapt(out, {N});
 
   for (auto _ : state) {
-/// [max-val]
-    float maxVal           = xt::amax(inTensor)[0];
-/// [max-val]
-/// [sum-exp]
+    /// [max-val]
+    float maxVal = xt::amax(inTensor)[0];
+    /// [max-val]
+    /// [sum-exp]
     xt::noalias(outTensor) = xt::exp(inTensor - maxVal);
     float totalVal         = xt::sum(outTensor)[0];
-/// [sum-exp]
-/// [divide]
+    /// [sum-exp]
+    /// [divide]
     xt::noalias(outTensor) /= totalVal;
-/// [divide]
+    /// [divide]
     benchmark::DoNotOptimize(out.data());
     benchmark::ClobberMemory();
   }

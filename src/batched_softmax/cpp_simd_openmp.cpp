@@ -3,7 +3,7 @@
 static void BENCHMARK_NAME(CPP_SIMD_OpenMP_BatchFirst)(benchmark::State& state) {
   aligned_vector<float> in(BATCH_SIZE * N, 1), out(BATCH_SIZE * N);
   for (auto _ : state) {
-    /// [algorithm]
+    /// [batch-first]
     for (int i = 0; i < BATCH_SIZE; i++) {
       const auto inData = in.data() + i * N;
       auto outData      = out.data() + i * N;
@@ -23,7 +23,7 @@ static void BENCHMARK_NAME(CPP_SIMD_OpenMP_BatchFirst)(benchmark::State& state) 
         outData[j] /= sum;
       }
     }
-    /// [algorithm]
+    /// [batch-first]
     benchmark::DoNotOptimize(out.data());
     benchmark::ClobberMemory();
   }
@@ -38,6 +38,7 @@ ADD_BENCHMARK(BENCHMARK_NAME(CPP_SIMD_OpenMP_BatchFirst));
 static void BENCHMARK_NAME(CPP_SIMD_OpenMP_LengthFirst)(benchmark::State& state) {
   aligned_vector<float> in(BATCH_SIZE * N, 1), out(BATCH_SIZE * N);
   for (auto _ : state) {
+    /// [length-first]
     aligned_vector<float> maxElements(BATCH_SIZE, std::numeric_limits<float>::min()),
         denominator(BATCH_SIZE, 0);
     for (int jj = 0; jj < N; jj++) {
@@ -65,6 +66,7 @@ static void BENCHMARK_NAME(CPP_SIMD_OpenMP_LengthFirst)(benchmark::State& state)
         outData[jj] /= denominator[i];
       }
     }
+    /// [length-first]
 
     benchmark::DoNotOptimize(out.data());
     benchmark::DoNotOptimize(maxElements.data());
@@ -82,6 +84,7 @@ ADD_BENCHMARK(BENCHMARK_NAME(CPP_SIMD_OpenMP_LengthFirst));
 static void BENCHMARK_NAME(CPP_SIMD_OpenMP_Mixed)(benchmark::State& state) {
   aligned_vector<float> in(BATCH_SIZE * N, 1), out(BATCH_SIZE * N);
   for (auto _ : state) {
+    /// [mixed]
     aligned_vector<float> maxElements(BATCH_SIZE, std::numeric_limits<float>::min()),
         denominator(BATCH_SIZE, 0);
     for (int jj = 0; jj < N; jj++) {
@@ -110,6 +113,7 @@ static void BENCHMARK_NAME(CPP_SIMD_OpenMP_Mixed)(benchmark::State& state) {
         outData[jj] /= denom;
       }
     }
+    /// [mixed]
 
     benchmark::DoNotOptimize(out.data());
     benchmark::DoNotOptimize(maxElements.data());

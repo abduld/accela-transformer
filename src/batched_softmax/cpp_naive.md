@@ -1,7 +1,19 @@
+---
+benchmark_names:
+    - CPP_Naive_BatchFirst
+    - CPP_Naive_LengthFirst
+    - CPP_Naive_Mixed
+cpp_code: src/batched_softmax/cpp_naive.cpp
+---
 # Naive C++
 
+> [!Note]
+> The following shows the implementation of the `{{benchmark_names}}` baseline.
+> The full source code listing is found in [{{cpp_code}} :fas fa-code: ]({{cpp_code}}).
+
+
 For the naive implementation, we consider three different traversal patterns for computing the batched softmax.
-The first iterates over the each element in the batch (`BATCH_SIZE` in the outer most loop):
+The implementation first iterates over the each element in the batch (`BATCH_SIZE` in the outer most loop):
 
 
 [](cpp_naive.cpp ':include :type=code cpp :fragment=batch-first')

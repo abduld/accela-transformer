@@ -10,9 +10,9 @@
 static void BENCHMARK_NAME(Pytorch)(benchmark::State& state) {
   at::init_num_threads();
   at::set_num_threads(1);
-  auto options      = at::TensorOptions().dtype(torch::kFloat32).device(at::kCPU).requires_grad(false);
-  torch::Tensor in  = torch::ones({N}, options),
-                out = torch::zeros({N}, options);
+  auto options =
+      at::TensorOptions().dtype(torch::kFloat32).device(at::kCPU).requires_grad(false);
+  torch::Tensor in = torch::ones({N}, options), out = torch::zeros({N}, options);
   for (auto _ : state) {
     out.set_(at::_softmax(in, 0, false));
     benchmark::DoNotOptimize(in.data_ptr());

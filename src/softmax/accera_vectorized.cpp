@@ -5,15 +5,15 @@
 /// [import-hat]
 
 static void BENCHMARK_NAME(Accera_Vectorized)(benchmark::State& state) {
-/// [declare-io]
+  /// [declare-io]
   aligned_vector<float> in(N, 1), out(N);
   const auto inData = in.data();
   auto outData      = out.data();
-/// [declare-io]
+  /// [declare-io]
   for (auto _ : state) {
-/// [use-function]
+    /// [use-function]
     vectorized(outData, inData);
-/// [use-function]
+    /// [use-function]
     benchmark::DoNotOptimize(outData);
     benchmark::ClobberMemory();
   }

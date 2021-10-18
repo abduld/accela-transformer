@@ -5,9 +5,7 @@
 #include "naive.hat"
 
 static void BENCHMARK_NAME(Accera_Naive)(benchmark::State& state) {
-  aligned_vector<float> in(BATCH_SIZE * N,
-                                                                                  1),
-      out(BATCH_SIZE * N);
+  aligned_vector<float> in(BATCH_SIZE * N, 1), out(BATCH_SIZE * N);
   const auto inData = in.data();
   auto outData      = out.data();
   for (auto _ : state) {

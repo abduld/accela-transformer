@@ -3,8 +3,8 @@
 #include "utils.hpp"
 
 // Attention layer hyperparameters taken from
-// https://huggingface.co/transformers/v2.2.0/pretrained_models.html for GPT-2 small (note: full
-// model has 12 layers)
+// https://huggingface.co/transformers/v2.2.0/pretrained_models.html for GPT-2
+// small (note: full model has 12 layers)
 
 // a sqrt that works on costexpr
 namespace {

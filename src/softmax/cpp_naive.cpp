@@ -5,21 +5,21 @@ static void BENCHMARK_NAME(CPP_Naive)(benchmark::State& state) {
   const auto inData = in.data();
   auto outData      = out.data();
   for (auto _ : state) {
-/// [max-val]
+    /// [max-val]
     const float max = *std::max_element(in.begin(), in.end());
-/// [max-val]
-/// [sum-exp]
+    /// [max-val]
+    /// [sum-exp]
     float denominator(0);
     for (int j = 0; j < N; j++) {
       outData[j] = std::exp(inData[j] - max);
       denominator += outData[j];
     }
-/// [sum-exp]
-/// [divide]
+    /// [sum-exp]
+    /// [divide]
     for (int j = 0; j < N; j++) {
       outData[j] /= denominator;
     }
-/// [divide]
+    /// [divide]
     benchmark::DoNotOptimize(outData);
     benchmark::ClobberMemory();
   }

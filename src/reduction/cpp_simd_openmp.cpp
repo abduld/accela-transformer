@@ -7,16 +7,16 @@ static void BENCHMARK_NAME(CPP_SIMD_OpenMP)(benchmark::State &state) {
   float output = 0;
 
   for (auto _ : state) {
-    float *inData =
-        reinterpret_cast<float *>(__builtin_assume_aligned(Input.data(), XSIMD_DEFAULT_ALIGNMENT));
+    float *inData = reinterpret_cast<float *>(
+        __builtin_assume_aligned(Input.data(), XSIMD_DEFAULT_ALIGNMENT));
 
-/// [reduce]
+    /// [reduce]
     output = 0;
 #pragma omp simd reduction(+ : output) aligned(inData : XSIMD_DEFAULT_ALIGNMENT)
     for (int idx = 0; idx < N; idx++) {
       output += inData[idx];
     }
-/// [reduce]
+    /// [reduce]
     benchmark::DoNotOptimize(inData);
     benchmark::ClobberMemory();
   }

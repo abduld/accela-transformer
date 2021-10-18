@@ -1,11 +1,9 @@
 #include "config.hpp"
 
 static void BENCHMARK_NAME(CPP_SIMD_OpenMP_BatchFirst)(benchmark::State& state) {
-  aligned_vector<float> in(BATCH_SIZE * N,
-                                                                                  1),
-      out(BATCH_SIZE * N);
+  aligned_vector<float> in(BATCH_SIZE * N, 1), out(BATCH_SIZE * N);
   for (auto _ : state) {
-    #pragma omp parallel for 
+#pragma omp parallel for
     for (int ii = 0; ii < BATCH_SIZE; ii++) {
       const auto inData = in.data() + ii * N;
       auto outData      = out.data() + ii * N;

@@ -5,7 +5,7 @@
 #include "naive.hat"
 
 static void BENCHMARK_NAME(Accera_Naive)(benchmark::State& state) {
-  aligned_vector<float> Input(N, 1.0/N);
+  aligned_vector<float> Input(N, 1.0 / N);
   float output = 0;
   for (auto _ : state) {
     output = 0;
@@ -20,4 +20,3 @@ static void BENCHMARK_NAME(Accera_Naive)(benchmark::State& state) {
 }
 
 ADD_BENCHMARK(BENCHMARK_NAME(Accera_Naive));
-
