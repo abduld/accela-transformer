@@ -21,11 +21,11 @@ The pseudocode of the naive implementation is:
 \begin{algorithm} 
 \begin{algorithmic} 
 \PROCEDURE{BatchedSoftmax}{$Input$}
-    \STATE maxVal = -$\infty$
-    \STATE denom = $0$
     \FOR{$b$ = 0 \TO \texttt{BATCH\_SIZE}} 
+        \STATE maxVal = -$\infty$
+        \STATE denom = $0$
         \FOR{$m$ = 0 \TO \texttt{N}} 
-            \STATE maxVal = $max$(maxVal[b], Input[bm, m])
+            \STATE maxVal = $max$(maxVal, Input[bm, m])
         \ENDFOR 
         \FOR{$i$ = 0 \TO \texttt{N}} 
             \STATE Output[b, i] = $e^{\text{Input[b, i]} - \text{maxVal}}$
