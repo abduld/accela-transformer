@@ -12,7 +12,7 @@ The implementation pseudocode is:
     \STATE maxVal = -$\infty$
     \STATE denom = 0 
     \FOR{$i$ = 0 \TO N} 
-        \STATE maxVal = max(max, Input[$i$])
+        \STATE maxVal = max(maxVal, Input[$i$])
     \ENDFOR 
     \FOR{$i$ = 0 \TO N} 
         \STATE Output[$i$] = $e^{\text{Input}[i] - maxVal}$
