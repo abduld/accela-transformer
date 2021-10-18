@@ -5,6 +5,11 @@ accera_code: src/batched_softmax/vectorized_fused.py
 ---
 # Naive Accera
 
+
+
+> [!ATTENTION]
+> Implement me.
+
 > [!Note]
 > The following shows the implementation of the `{{benchmark_name}}`.
 > The full source code listing of the Accera code generator can be found in  [{{accera_code}} :fas fa-code: ]({{accera_code}}) and the benchmark runner is found in [{{cpp_code}} :fas fa-code: ]({{cpp_code}}).
@@ -38,25 +43,25 @@ The pseudocode of the naive implementation is:
 \end{algorithm}
 ```
 
-[vectorized_fused.py](vectorized_fused.py ':include :type=code python :fragment=import-package')
 
-[vectorized_fused.py](vectorized_fused.py ':include :type=code python :fragment=declare-input-size')
+A vectorized and fused batched Softmax implementation in Accera follows from the above pseudocode and requires minor tweaks to the schedule.
+We use the [Accera naive implementation](naive.py) as basis.
+The code does not change until we create the fused schedule:
 
-[vectorized_fused.py](vectorized_fused.py ':include :type=code python :fragment=declare-target-dependent-properties')
+[vectorized_fused.py](vectorized_fused.py ':include :type=code python :fragment=naive')
 
-[vectorized_fused.py](vectorized_fused.py ':include :type=code python :fragment=init')
 
-[vectorized_fused.py](vectorized_fused.py ':include :type=code python :fragment=max')
+We fuse all the schedules into a single schedule and construct an action plan from that.
 
-[vectorized_fused.py](vectorized_fused.py ':include :type=code python :fragment=exp')
+[vectorized_fused.py](vectorized_fused.py ':include :type=code python :fragment=fuse')
 
-[vectorized_fused.py](vectorized_fused.py ':include :type=code python :fragment=accum')
 
-[vectorized_fused.py](vectorized_fused.py ':include :type=code python :fragment=div')
+[vectorized_fused.py](vectorized_fused.py ':include :type=code python :fragment=schedule')
 
-[vectorized_fused.py](vectorized_fused.py ':include :type=code python :fragment=softmax')
+[vectorized_fused.py](vectorized_fused.py ':include :type=code python :fragment=vectorize')
 
 [vectorized_fused.py](vectorized_fused.py ':include :type=code python :fragment=export-package')
+
 
 ## Usage
 
