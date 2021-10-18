@@ -1,20 +1,27 @@
 #!/usr/bin/env python3
+
+### [import-package]
 import math
 import robopy as acc
 from robopy._lang_python import fast_exp_mlas
+### [import-package]
 
+### [declare-input-size]
 BATCH_SIZE = 2 ** 10
 N = 2 ** 6
-DEV_MODE = False
+### [declare-input-size]
 
+### [declare-target-dependent-properties]
 target = acc.Target(category=acc.Target.Category.CPU)
 vector_size = (
     target.vector_bytes // 4
 )  # AVX-2 gives 256-bit registers, which can hold 8 floats
 vector_units = 2 * vector_size  # AVX-2 has 16 256-bit registers
 vector_ports = 8 * vector_units
+### [declare-target-dependent-properties]
 
 
+### [init]
 def init_fn(package, MaxVal, Denom):
     init_nest = acc.Nest(shape=(BATCH_SIZE,))
     z = init_nest.get_indices()
@@ -39,10 +46,11 @@ def init_fn(package, MaxVal, Denom):
     return package.add_function(
         init_plan, args=(MaxVal, Denom), base_name="vectorized_init"
     )
+### [init]
 
 
+### [max]
 def max_fn(package, MaxVal, Input):
-
     max_nest = acc.Nest(shape=(BATCH_SIZE, N))
     bm, m = max_nest.get_indices()
 
@@ -65,8 +73,10 @@ def max_fn(package, MaxVal, Input):
     return package.add_function(
         max_plan, args=(MaxVal, Input), base_name="vectorized_max"
     )
+### [max]
 
 
+### [exp]
 def exp_fn(package, Output, Input, MaxVal):
     exp_nest = acc.Nest(shape=(BATCH_SIZE, N))
     bi, i = exp_nest.get_indices()
@@ -90,8 +100,10 @@ def exp_fn(package, Output, Input, MaxVal):
     return package.add_function(
         exp_plan, args=(Output, Input, MaxVal), base_name="vectorized_exp"
     )
+### [exp]
 
 
+### [accum]
 def accum_fn(package, Denom, Output):
     accum_nest = acc.Nest(shape=(BATCH_SIZE, N))
     ba, a = accum_nest.get_indices()
@@ -113,8 +125,9 @@ def accum_fn(package, Denom, Output):
     return package.add_function(
         accum_plan, args=(Denom, Output), base_name="vectorized_accum"
     )
+### [accum]
 
-
+### [div]
 def div_fn(package, Output, Denom):
     div_nest = acc.Nest(shape=(BATCH_SIZE, N))
     bj, j = div_nest.get_indices()
@@ -138,8 +151,10 @@ def div_fn(package, Output, Denom):
     return package.add_function(
         div_plan, args=(Output, Denom), base_name="vectorized_div"
     )
+### [div]
 
 
+### [softmax]
 def softmax(package, Output, Input, base_name="vectorized"):
     global BATCH_SIZE, N
     BATCH_SIZE, N = Input.shape
@@ -170,8 +185,10 @@ def softmax(package, Output, Input, base_name="vectorized"):
         div(Output, Denom)
     plan = nest.create_action_plan(target)
     return plan, (Output, Input, MaxVal, Denom)
+### [softmax]
 
 if __name__ == "__main__":
+### [export-package]
   package = acc.Package()
 
   Input = acc.Array(
@@ -190,5 +207,6 @@ if __name__ == "__main__":
 
   package.build(
       name="vectorized",
-      mode=acc.Package.Mode.DEBUG if DEV_MODE else acc.Package.Mode.RELEASE,
+      mode=acc.Package.Mode.RELEASE,
   )
+### [export-package]
