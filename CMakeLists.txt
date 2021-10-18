@@ -150,17 +150,17 @@ if(COMPILER_IS_CLANG)
   add_definitions(-ferror-limit=1)
 endif(COMPILER_IS_CLANG)
 
-macro(add_robocode_ MODULE_NAME IMPLEMENTATION_NAME)
+macro(add_accera_ MODULE_NAME IMPLEMENTATION_NAME)
   set(_PythonGeneratorFile ${IMPLEMENTATION_NAME}.py)
   set(_OutputObjectFile ${IMPLEMENTATION_NAME}.o)
   set(_HatFile ${IMPLEMENTATION_NAME}.hat)
   add_custom_command(
     OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}"
-           "${CMAKE_CURRENT_BINARY_DIR}/robocode_${IMPLEMENTATION_NAME}.cpp"
+           "${CMAKE_CURRENT_BINARY_DIR}/accera_${IMPLEMENTATION_NAME}.cpp"
     PRE_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy
-            "${CMAKE_CURRENT_SOURCE_DIR}/robocode_${IMPLEMENTATION_NAME}.cpp"
-            "${CMAKE_CURRENT_BINARY_DIR}/robocode_${IMPLEMENTATION_NAME}.cpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/accera_${IMPLEMENTATION_NAME}.cpp"
+            "${CMAKE_CURRENT_BINARY_DIR}/accera_${IMPLEMENTATION_NAME}.cpp"
     COMMAND "${PYTHON_EXECUTABLE}"
             "${CMAKE_CURRENT_SOURCE_DIR}/${_PythonGeneratorFile}"
             --argument
@@ -176,19 +176,19 @@ macro(add_robocode_ MODULE_NAME IMPLEMENTATION_NAME)
                    ${CMAKE_CURRENT_BINARY_DIR}/${IMPLEMENTATION_NAME}.s
     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
     DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/${_PythonGeneratorFile}" 
-            "${CMAKE_CURRENT_SOURCE_DIR}/robocode_${IMPLEMENTATION_NAME}.cpp")
-  add_custom_target(robocode_${MODULE_NAME}_${IMPLEMENTATION_NAME} ALL
+            "${CMAKE_CURRENT_SOURCE_DIR}/accera_${IMPLEMENTATION_NAME}.cpp")
+  add_custom_target(accera_${MODULE_NAME}_${IMPLEMENTATION_NAME} ALL
                     DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}"
                             "${CMAKE_CURRENT_BINARY_DIR}/${_HatFile}")
-  add_dependencies(${MODULE_NAME} "robocode_${MODULE_NAME}_${IMPLEMENTATION_NAME}")
+  add_dependencies(${MODULE_NAME} "accera_${MODULE_NAME}_${IMPLEMENTATION_NAME}")
   target_link_libraries(${MODULE_NAME} PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/${_OutputObjectFile}")
-  target_sources(${MODULE_NAME} PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/robocode_${IMPLEMENTATION_NAME}.cpp")
+  target_sources(${MODULE_NAME} PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/accera_${IMPLEMENTATION_NAME}.cpp")
 endmacro()
 
-macro(add_robocode MODULE_NAME)
-  set(robocode_implementations ${ARGN}) 
-  foreach(robocode_implementation IN LISTS robocode_implementations)
-    add_robocode_(${MODULE_NAME} ${robocode_implementation})
+macro(add_accera MODULE_NAME)
+  set(accera_implementations ${ARGN}) 
+  foreach(accera_implementation IN LISTS accera_implementations)
+    add_accera_(${MODULE_NAME} ${accera_implementation})
   endforeach()
 endmacro()
 

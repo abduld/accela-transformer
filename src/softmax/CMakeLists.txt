@@ -7,7 +7,7 @@ add_executable(${MODULE_NAME}
   cpp_xtensor.cpp
   cpp_simd_openmp.cpp
 )
-add_robocode(${MODULE_NAME} naive vectorized vectorized_2)
+add_accera(${MODULE_NAME} naive vectorized vectorized_2)
 
 target_compile_definitions(${MODULE_NAME} PRIVATE -DMODULE_NAME=${MODULE_NAME})
 target_include_directories(${MODULE_NAME} SYSTEM PRIVATE

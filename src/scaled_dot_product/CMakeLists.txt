@@ -4,7 +4,7 @@ add_executable(${MODULE_NAME}
   main.cpp
   cpp_naive.cpp
 )
-add_robocode(${MODULE_NAME} naive)
+add_accera(${MODULE_NAME} naive)
 
 target_compile_definitions(${MODULE_NAME} PRIVATE -DMODULE_NAME=${MODULE_NAME})
 target_include_directories(${MODULE_NAME} SYSTEM PRIVATE

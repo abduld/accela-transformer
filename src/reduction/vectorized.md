@@ -183,4 +183,4 @@ We export our package as an object file called `vectorized`.
 The package can then be used within the C code base. 
 Here we benchmark the `vectorized` function:
 
-[](robocode_vectorized.cpp ':include :type=code cpp')
+[](accera_vectorized.cpp ':include :type=code cpp')

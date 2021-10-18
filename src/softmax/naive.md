@@ -57,12 +57,12 @@ We then export the schedule as function called `naive` into an object file calle
 The package can then be used within our C code base.
 To do so, we first need to import the HAT package created:
 
-[robocode_naive.cpp](robocode_naive.cpp ':include :type=code cpp :fragment=import-hat')
+[accera_naive.cpp](accera_naive.cpp ':include :type=code cpp :fragment=import-hat')
 
 We then declare our inputs and outputs:
 
-[robocode_naive.cpp](robocode_naive.cpp ':include :type=code cpp :fragment=declare-io')
+[accera_naive.cpp](accera_naive.cpp ':include :type=code cpp :fragment=declare-io')
 
 We then can use the exported function within our C code:
 
-[robocode_naive.cpp](robocode_naive.cpp ':include :type=code cpp :fragment=use-function')
+[accera_naive.cpp](accera_naive.cpp ':include :type=code cpp :fragment=use-function')

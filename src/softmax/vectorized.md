@@ -96,14 +96,14 @@ Finally, we export the package.
 The package can then be used within our C code base.
 To do so, we first need to import the HAT package created:
 
-[robocode_vectorized.cpp](robocode_vectorized.cpp ':include :type=code cpp :fragment=import-hat')
+[accera_vectorized.cpp](accera_vectorized.cpp ':include :type=code cpp :fragment=import-hat')
 
 We then declare our inputs and outputs:
 
-[robocode_vectorized.cpp](robocode_vectorized.cpp ':include :type=code cpp :fragment=declare-io')
+[accera_vectorized.cpp](accera_vectorized.cpp ':include :type=code cpp :fragment=declare-io')
 
 We then can use the exported function within our C code:
 
-[robocode_vectorized.cpp](robocode_vectorized.cpp ':include :type=code cpp :fragment=use-function')
+[accera_vectorized.cpp](accera_vectorized.cpp ':include :type=code cpp :fragment=use-function')
 
 
