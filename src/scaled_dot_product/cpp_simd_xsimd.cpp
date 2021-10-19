@@ -21,6 +21,12 @@ static void row_softmax(float *outData0, const float *inData0) {
 /// [row-softmax]
 
 static void BENCHMARK_NAME(CPP_XSIMD)(benchmark::State &state) {
+  // Use 1 thread unless OMP_NUM_THREADS is explicit set.
+  const char* val = getenv("OMP_NUM_THREADS");
+  if (val == nullptr || !*val) {
+    omp_set_num_threads(1);
+  }
+  
 
   /// [declare-io]
   aligned_vector<float> Q(SEQUENCE_LENGTH * DM, 1);
