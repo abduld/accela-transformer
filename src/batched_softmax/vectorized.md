@@ -1,4 +1,15 @@
+---
+benchmark_name: Accera_Vectorized
+cpp_code: src/batched_softmax/accera_vectorized.cpp
+accera_code: src/batched_softmax/vectorized.py
+---
 # Vectorized Accera
+
+> [!Note]
+> The following shows the implementation of the `{{benchmark_name}}`.
+> The full source code listing of the Accera code generator can be found in  [{{accera_code}} :fas fa-code: ]({{accera_code}}) and the benchmark runner is found in [{{cpp_code}} :fas fa-code: ]({{cpp_code}}).
+ 
+ 
 
 [vectorized.py](vectorized.py ':include :type=code python :fragment=import-package')
 

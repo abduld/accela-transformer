@@ -1,4 +1,15 @@
+---
+benchmark_name: Accera_Vectorized
+cpp_code: src/reduction/accera_vectorized.cpp
+accera_code: src/reduction/vectorized.py
+---
 # Vectorized Accera
+
+> [!Note]
+> The following shows the implementation of the `{{benchmark_name}}`.
+> The full source code listing of the Accera code generator can be found in  [{{accera_code}} :fas fa-code: ]({{accera_code}}) and the benchmark runner is found in [{{cpp_code}} :fas fa-code: ]({{cpp_code}}).
+ 
+ 
 
 The following shows how to implement tree reduction using Accera.
 There are only a few tweaks that we need to make to the [naive](src/reduction/naive.md) Accera implementation to enable vectorization. 

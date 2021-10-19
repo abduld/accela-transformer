@@ -73,8 +73,8 @@
         executeScript: true,
         mergeNavbar: true,
         auto2top: true,
-        maxLevel: 1,
-        subMaxLevel: 2,
+        maxLevel   : 3,
+        subMaxLevel: 3,
         alias: {
           "/.*/_sidebar.md": "/_sidebar.md",
         },
@@ -121,43 +121,11 @@
           noData: "No results!",
           placeholder: "Search...",
         },
-        plugins: [
-          function(hook, vm) {
-            hook.init(function() {
-              // Called when the script starts running, only trigger once, no arguments,
-            });
-      
-            hook.beforeEach(function(content) {
-              console.log(content)
-              // Invoked each time before parsing the Markdown file.
-              // ...
-              return content;
-            });
-      
-            hook.afterEach(function(html, next) {
-              // Invoked each time after the Markdown file is parsed.
-              // beforeEach and afterEach support asynchronous。
-              // ...
-              // call `next(html)` when task is done.
-              next(html);
-            });
-      
-            hook.doneEach(function() {
-              // Invoked each time after the data is fully loaded, no arguments,
-              // ...
-            });
-      
-            hook.mounted(function() {
-              // Called after initial completion. Only trigger once, no arguments.
-            });
-      
-            hook.ready(function() {
-              // Called after initial completion, no arguments.
-            });
-          }
-        ]
       };
     </script>
+    <!--inject-app-->
+    <!--inject-config-->
+    
     <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
     <script src="//cdn.jsdelivr.net/npm/docsify-themeable@0"></script>
     <script src="//unpkg.com/docsify-copy-code@2"></script>
@@ -184,9 +152,7 @@
 
     <script src="//cdn.jsdelivr.net/npm/docsify-katex@latest/dist/docsify-katex.js"></script>
     <script src="//unpkg.com/docsify-plugin-flexible-alerts"></script>
-
-    <script src="//unpkg.com/docsify-glossary/dist/docsify-glossary.min.js"></script>
-
+ 
     <script src="//cdn.jsdelivr.net/npm/prismjs@1.25.0/components/prism-llvm.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/prismjs@1.25.0/components/prism-clike.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/prismjs@1.25.0/components/prism-c.min.js"></script>

@@ -1,6 +1,5 @@
 
-#include "config.hpp"
-#include "utils.hpp"
+#include "config.hpp" 
 
 #include "naive.hat"
 
