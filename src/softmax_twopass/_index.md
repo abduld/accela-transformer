@@ -3,6 +3,7 @@
 https://arxiv.org/pdf/2001.04438.pdf
 
 
+```algorithm
 \begin{algorithm}[H]
     \begin{algorithmic}
         \Function {SoftmaxTwoPass}{$X$, $Y$}
@@ -27,3 +28,4 @@ https://arxiv.org/pdf/2001.04438.pdf
     \caption{The Two-Pass softmax algorithm. $\textrm{ExtExp}$ denotes an exponential function that produce a pair $(m, n)$ of floating-point values.}
     \label{algo:two-pass}
 \end{algorithm}
+```

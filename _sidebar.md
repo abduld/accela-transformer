@@ -19,7 +19,7 @@
 * [Batched SoftMax](/src/batched_softmax/_index.md)
   * [Accera Naive](/src/batched_softmax/naive.md)
   * [Accera Vectorized](src/batched_softmax/vectorized.md)
-  * [Accera Vectorized Fused](src/batched_softmax/vectorized_fused.md)
+  <!-- * [Accera Vectorized Fused](src/batched_softmax/vectorized_fused.md) -->
   * [CPP Naive](src/batched_softmax/cpp_naive.md)
   * [CPP SIMD OpenMP](src/batched_softmax/cpp_simd_openmp.md)
   * [CPP SIMD XSIMD](src/batched_softmax/cpp_simd_xsimd.md)
@@ -27,7 +27,7 @@
 * 
 * [Scaled Dot Product](/src/scaled_dot_product/_index.md)
   * [Accera Naive](/src/scaled_dot_product/naive.md)
-  * [Accera Fused](src/scaled_dot_product/fused.md) 
+  <!-- * [Accera Fused](src/scaled_dot_product/fused.md)  -->
   * [CPP Naive](src/scaled_dot_product/cpp_naive.md)
   * [CPP SIMD OpenMP](src/scaled_dot_product/cpp_simd_openmp.md)
   * [CPP SIMD XSIMD](src/scaled_dot_product/cpp_simd_xsimd.md)
