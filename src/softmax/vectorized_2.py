@@ -140,6 +140,6 @@ div()
 ### [export-package]
 package.build(
     name="vectorized_2",
-    mode=acc.Package.Mode.DEBUG if DEV_MODE else acc.Package.Mode.RELEASE,
+    mode=acc.Package.Mode.RELEASE,
 )
 ### [export-package]
