@@ -1,7 +1,16 @@
+---
+benchmark_name: Accera_Naive
+cpp_code: src/softmax/accera_naive.cpp
+accera_code: src/softmax/naive.py
+---
 # Naive Accera
 
-To implement a basic Softmax in Accera, we need to import the required packages.
-We import that `math` package to use the `inf` ($\infty$) constant.
+> [!Note]
+> The following shows the implementation of the `{{benchmark_name}}`.
+> The full source code listing of the Accera code generator can be found in  [{{accera_code}} :fas fa-code: ]({{accera_code}}) and the benchmark runner is found in [{{cpp_code}} :fas fa-code: ]({{cpp_code}}).
+
+To implement a basic Softmax in Accera, we first need to import the required packages.
+The `math` package is imported to use the `inf` ($\infty$) constant.
 
 [](naive.py ':include :type=code python :fragment=import-package')
 
