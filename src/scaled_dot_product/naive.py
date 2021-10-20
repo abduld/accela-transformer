@@ -63,8 +63,8 @@ Output = acc.Array(
 ### [declare-tmp-arrays]
 
 ### [declare-package]
-package = acc.Package()
 target = acc.Target(category=acc.Target.Category.CPU)
+package = acc.Package()
 ### [declare-package]
 
 ### [add-functions-to-package]
