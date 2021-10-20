@@ -10,14 +10,14 @@ import math
 import robopy as acc
 from matmul import Gemm
 from batched_softmax.vectorized import softmax
+
 ### [import-package]
- 
 
 
 ### [declare-input-size]
 BATCH_SIZE = 1
 SEQUENCE_LENGTH = 10
-DM =  768
+DM = 768
 DFF = 3072
 DK = 64
 DV = 64
@@ -28,23 +28,38 @@ TEMPERATURE = DK ** 0.5
 TEMPERATURE_INV = 1.0 / TEMPERATURE
 ATTN_DROPOUT = 0.1
 ### [declare-input-size]
- 
+
 
 ### [declare-input-arrays]
 Q = acc.Array(
-    role=acc.Array.Role.INPUT, element_type=acc.ScalarType.float32, shape=(SEQUENCE_LENGTH,DM))
+    role=acc.Array.Role.INPUT,
+    element_type=acc.ScalarType.float32,
+    shape=(SEQUENCE_LENGTH, DM),
+)
 K = acc.Array(
-    role=acc.Array.Role.INPUT, element_type=acc.ScalarType.float32, shape=(SEQUENCE_LENGTH,DM))
+    role=acc.Array.Role.INPUT,
+    element_type=acc.ScalarType.float32,
+    shape=(SEQUENCE_LENGTH, DM),
+)
 V = acc.Array(
-    role=acc.Array.Role.INPUT, element_type=acc.ScalarType.float32, shape=(SEQUENCE_LENGTH,DM))
+    role=acc.Array.Role.INPUT,
+    element_type=acc.ScalarType.float32,
+    shape=(SEQUENCE_LENGTH, DM),
+)
 ### [declare-input-arrays]
 
 ### [declare-tmp-arrays]
 QK = acc.Array(
-    role=acc.Array.Role.INPUT_OUTPUT, element_type=acc.ScalarType.float32, shape=(SEQUENCE_LENGTH,SEQUENCE_LENGTH))
+    role=acc.Array.Role.INPUT_OUTPUT,
+    element_type=acc.ScalarType.float32,
+    shape=(SEQUENCE_LENGTH, SEQUENCE_LENGTH),
+)
 
 Output = acc.Array(
-    role=acc.Array.Role.INPUT_OUTPUT, element_type=acc.ScalarType.float32, shape=(SEQUENCE_LENGTH,DM))
+    role=acc.Array.Role.INPUT_OUTPUT,
+    element_type=acc.ScalarType.float32,
+    shape=(SEQUENCE_LENGTH, DM),
+)
 ### [declare-tmp-arrays]
 
 ### [declare-package]
@@ -53,24 +68,37 @@ target = acc.Target(category=acc.Target.Category.CPU)
 ### [declare-package]
 
 ### [add-functions-to-package]
-gemm_qk_plan, _ = Gemm(Q, K, None, QK, transB=True, alpha=TEMPERATURE_INV, beta=0.0, target=target)
+gemm_qk_plan, _ = Gemm(
+    Q, K, None, QK, transB=True, alpha=TEMPERATURE_INV, beta=0.0, target=target
+)
 softmax_plan, softmax_args = softmax(package, QK, QK, base_name="naive_softmax")
 gemm_qkv_plan, _ = Gemm(QK, V, None, Output, beta=0.0, target=target)
 
 _, _, MaxElems, Denoms = softmax_args
 
-gemm_qk_fn = package.add_function(gemm_qk_plan, args=(Q, K, QK), base_name="naive_gemm_qk")
-softmax_fn = package.add_function(softmax_plan, args=softmax_args, base_name="naive_softmax")
-gemm_qkv_fn = package.add_function(gemm_qkv_plan, args=(QK, V, Output), base_name="naive_gemm_qkv")
+gemm_qk_fn = package.add_function(
+    gemm_qk_plan, args=(Q, K, QK), base_name="naive_gemm_qk"
+)
+softmax_fn = package.add_function(
+    softmax_plan, args=softmax_args, base_name="naive_softmax"
+)
+gemm_qkv_fn = package.add_function(
+    gemm_qkv_plan, args=(QK, V, Output), base_name="naive_gemm_qkv"
+)
 ### [add-functions-to-package]
 
 ### [define-dispatch-function]
 def scaled_dot_product_attention(Q, K, V, Output, QK, MaxElems, Denoms):
-  gemm_qk_fn(Q, K, QK)
-  softmax_fn(QK, QK, MaxElems, Denoms)
-  gemm_qkv_fn(QK, V, Output)
+    gemm_qk_fn(Q, K, QK)
+    softmax_fn(QK, QK, MaxElems, Denoms)
+    gemm_qkv_fn(QK, V, Output)
 
-scaled_dot_product_attention_fn = package.add_function(scaled_dot_product_attention, args=(Q, K, V, Output, QK, MaxElems, Denoms), base_name="naive_scaled_dot_product_attention")
+
+scaled_dot_product_attention_fn = package.add_function(
+    scaled_dot_product_attention,
+    args=(Q, K, V, Output, QK, MaxElems, Denoms),
+    base_name="naive_scaled_dot_product_attention",
+)
 ### [define-dispatch-function]
 
 

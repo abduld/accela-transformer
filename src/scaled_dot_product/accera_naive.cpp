@@ -13,8 +13,8 @@ static void BENCHMARK_NAME(Accera_Naive_SEQ)(benchmark::State& state) {
 
   for (auto _ : state) {
     /// [call-function-sequence]
-    aligned_vector<float> maxElements(SEQUENCE_LENGTH, std::numeric_limits<float>::min()),
-        denominator(SEQUENCE_LENGTH, 0);
+    aligned_vector<float> maxElements(SEQUENCE_LENGTH, std::numeric_limits<float>::min());
+    aligned_vector<float> denominator(SEQUENCE_LENGTH, 0);
     naive_gemm_qk(Q.data(), K.data(), QK.data());
     naive_softmax(QK.data(), QK.data(), maxElements.data(), denominator.data());
     naive_gemm_qkv(QK.data(), V.data(), Output.data());
@@ -40,8 +40,8 @@ static void BENCHMARK_NAME(Accera_Naive)(benchmark::State& state) {
 
   for (auto _ : state) {
     /// [call-scaled-dot-product]
-    aligned_vector<float> maxElements(SEQUENCE_LENGTH, std::numeric_limits<float>::min()),
-        denominator(SEQUENCE_LENGTH, 0);
+    aligned_vector<float> maxElements(SEQUENCE_LENGTH, std::numeric_limits<float>::min());
+    aligned_vector<float> denominator(SEQUENCE_LENGTH, 0);
     naive_scaled_dot_product_attention(Q.data(), K.data(), V.data(), Output.data(),
                                        QK.data(), maxElements.data(), denominator.data());
     /// [call-scaled-dot-product]

@@ -3,8 +3,7 @@
 import math
 import robopy as acc
 
-N = 2 ** 20
-DEV_MODE = False
+N = 2 ** 20 
 
 target = acc.Target(category=acc.Target.Category.CPU)
 vector_size = (
@@ -61,5 +60,5 @@ package.add_function(fused_plan, args=(Sum, Input, SumVec), base_name="parallize
 package.build(
     name="parallized",
     format=acc.Package.Format.HAT,
-    mode=acc.Package.Mode.DEBUG if DEV_MODE else acc.Package.Mode.RELEASE,
+    mode=acc.Package.Mode.RELEASE,
 )

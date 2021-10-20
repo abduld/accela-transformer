@@ -20,3 +20,8 @@ With the following inputs and output:
 Where the `row_softmax` function is defined as:
 
 [](cpp_naive.cpp ':include :type=code cpp :fragment=row-softmax')
+
+The implementation uses [OpenBLAS's](https://www.openblas.net/) implementation of matrix multiplication.
+To insure that we are using OpenBLAS in a single-threaded way, we set the number of threads:
+
+[](cpp_naive.cpp ':include :type=code cpp :fragment=set-num-threads')
